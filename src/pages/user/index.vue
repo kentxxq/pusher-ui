@@ -89,7 +89,7 @@
         </el-dialog>
 
         <!-- 修改用户信息 -->
-        <el-dialog v-model="updateVisible" tite="修改用户信息" @close="updateVisible = false">
+        <el-dialog v-model="updateVisible" title="修改用户信息" @close="updateVisible = false">
             <el-select v-model="updateTmpUserRole" placelholder="请选择" size="large">
                 <el-option v-for="option in roleTypeOptions" :key="option.enumKey" :label="option.enumDisplayName"
                     :value="option.enumKey" />
