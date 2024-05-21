@@ -34,10 +34,19 @@
                         {{ timeformat(scope.row.createDate) }}
                     </template>
                 </el-table-column>
-                <el-table-column fixed="right" label="操作" width="120">
+                <el-table-column fixed="right" label="操作">
                     <template #default="scope">
                         <el-button type="primary" size="small" @click.stop="UpdateRoomChannel(scope.row.id)">
                             关联管道
+                        </el-button>
+                        <el-button type="success" size="small" @click.stop="SendTestMessage(scope.row.roomCode)">
+                            发送测试消息
+                        </el-button>
+                        <el-button type="info" size="small" @click.stop="CopyUrl(scope.row.roomCode, 'Get')">
+                            复制get地址
+                        </el-button>
+                        <el-button type="info" size="small" @click.stop="CopyUrl(scope.row.roomCode, 'Post')">
+                            复制post地址
                         </el-button>
                     </template>
                 </el-table-column>
@@ -90,13 +99,15 @@
 </template>
 
 <script setup lang='ts'>
-import { roomCreateRoomApi, roomDeleteRoomApi, roomGetRoomsApi } from '@/api/room';
+import { roomCreateRoomApi, roomDeleteRoomApi, roomGetRoomsApi, roomSendMessageByGetApi } from '@/api/room';
 import { computed, onMounted, ref } from 'vue';
 import type { Room } from '@/types/pusher/room'
 import { ElMessage, ElTable } from 'element-plus';
 import { timeformat } from '@/utils/convert';
 import type { Channel } from '@/types/pusher/channel';
 import { channelGetUserChannelsApi, channelGetRoomChannels, channelUpdateRoomChannel } from '@/api/channel';
+import useClipboard from 'vue-clipboard3'
+
 
 
 defineOptions({
@@ -171,7 +182,7 @@ const onDeleteRoomConfirm = async () => {
 };
 
 
-
+// 操作
 // 关联管道
 const relationVisible = ref(false)
 const roomChannelIds = ref<number[]>([])
@@ -206,6 +217,34 @@ const onRelationConfirm = async () => {
 const onRelationClose = () => {
     relationVisible.value = false
 }
+
+// 复制url
+const GetUrlByMethod = (url: string, method: string) => {
+    if (method == 'Get') {
+        return `${window.location.protocol}//${window.location.host}/Room/SendMessageBy${method}/${url}?content=消息内容`
+    } else {
+        return `${window.location.protocol}//${window.location.host}/Room/SendMessageBy${method}/${url}`
+    }
+}
+
+const CopyUrl = (url: string, method: string) => {
+    const { toClipboard } = useClipboard()
+    toClipboard(GetUrlByMethod(url, method))
+    ElMessage({
+        message: `已拷贝到粘贴板`,
+        type: 'success',
+    })
+}
+
+// 发送测试消息
+const SendTestMessage = async (roomCode: string) => {
+    var result = await roomSendMessageByGetApi(roomCode, "测试内容")
+    ElMessage({
+        message: result,
+        type: 'success',
+    })
+}
+
 
 </script>
 

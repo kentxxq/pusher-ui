@@ -17,11 +17,18 @@ export function roomCreateRoomApi(roomName: string) {
   })
 }
 
-
 export function roomDeleteRoomApi(roomIdList: Array<number>) {
   return http<Array<Room>>({
     url: '/Room/DeleteRoom',
     method: HttpMethod.POST,
     data: roomIdList
+  })
+}
+
+export function roomSendMessageByGetApi(roomCode: string, customContent: string) {
+  return http<string>({
+    url: `/Room/SendMessageByGet/${roomCode}`,
+    method: HttpMethod.GET,
+    params: { content: customContent }
   })
 }
