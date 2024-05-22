@@ -99,13 +99,13 @@
 </template>
 
 <script setup lang='ts'>
-import { roomCreateRoomApi, roomDeleteRoomApi, roomGetRoomsApi, roomSendMessageByGetApi } from '@/api/room';
+import { roomCreateRoomApi, roomDeleteRoomApi, roomGetRoomsApi, roomSendMessageByGetApi, roomGetRoomChannelsApi, roomUpdateRoomChannelApi } from '@/api/room';
 import { computed, onMounted, ref } from 'vue';
 import type { Room } from '@/types/pusher/room'
 import { ElMessage, ElTable } from 'element-plus';
 import { timeformat } from '@/utils/convert';
 import type { Channel } from '@/types/pusher/channel';
-import { channelGetUserChannelsApi, channelGetRoomChannels, channelUpdateRoomChannel } from '@/api/channel';
+import { channelGetUserChannelsApi } from '@/api/channel';
 import useClipboard from 'vue-clipboard3'
 
 
@@ -203,11 +203,11 @@ const UpdateRoomChannel = async (roomId: number) => {
     allChannels.value = await channelGetUserChannelsApi()
     transferData.value = allChannels.value.map(c => { return { key: c.id, label: c.channelName, disabled: false } })
     // 拿到房间的管道
-    const roomChannels = await channelGetRoomChannels(roomId)
+    const roomChannels = await roomGetRoomChannelsApi(roomId)
     roomChannelIds.value = roomChannels.map(r => r.id)
 }
 const onRelationConfirm = async () => {
-    const result = await channelUpdateRoomChannel({ roomId: relationRoomId.value!, channelIds: roomChannelIds.value })
+    const result = await roomUpdateRoomChannelApi({ roomId: relationRoomId.value!, channelIds: roomChannelIds.value })
     ElMessage({
         message: `更新后房间的管道数量:${result}`,
         type: 'success'

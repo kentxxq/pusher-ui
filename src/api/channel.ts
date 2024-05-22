@@ -26,18 +26,10 @@ export function channelDeleteChannelApi(channelIdList: Array<number>) {
   })
 }
 
-export function channelGetRoomChannels(roomId: number) {
-  return http<Array<Channel>>({
-    url: '/Room/GetRoomChannels',
+export function channelSendTestMessageToChannelApi(channelId: number) {
+  return http<boolean>({
+    url: '/Channel/SendTestMessageToChannel',
     method: HttpMethod.GET,
-    params: { roomid: roomId }
-  })
-}
-
-export function channelUpdateRoomChannel(updateRoomChannelRO: UpdateRoomChannelRO) {
-  return http<number>({
-    url: '/Room/UpdateRoomChannel',
-    method: HttpMethod.POST,
-    data: updateRoomChannelRO
+    params: { channelId }
   })
 }

@@ -32,8 +32,11 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="channelUrl" :show-overflow-tooltip="true" label="管道地址" />
-                <el-table-column fixed="right" label="操作" width="120">
+                <el-table-column fixed="right" label="操作">
                     <template #default="scope">
+                        <el-button type="success" size="small" @click.stop="TestChannel(scope.row.id)">
+                            发送测试信息
+                        </el-button>
                         <el-button type="primary" size="small" @click.stop="copyUrl(scope.row.channelUrl)">
                             复制url
                         </el-button>
@@ -86,7 +89,7 @@
 <script setup lang='ts'>
 import { computed, onMounted, reactive, ref } from 'vue';
 import type { Channel, CreateChannelRO } from '@/types/pusher/channel'
-import { channelCreateChannelApi, channelDeleteChannelApi, channelGetUserChannelsApi, } from '@/api/channel';
+import { channelCreateChannelApi, channelDeleteChannelApi, channelGetUserChannelsApi, channelSendTestMessageToChannelApi, } from '@/api/channel';
 import type { EnumObject } from '@/types/pusher/common';
 import { enumChannelEnumApi } from '@/api/enumapi';
 import { ElMessage, ElTable, type FormInstance, type FormRules } from 'element-plus';
@@ -103,6 +106,7 @@ onMounted(async () => {
 })
 
 // 表格
+// 操作
 const copyUrl = (content: string) => {
     const { toClipboard } = useClipboard()
     toClipboard(content)
@@ -111,8 +115,16 @@ const copyUrl = (content: string) => {
         type: 'success',
     })
 }
-let channels = ref<Channel[]>([])
+const TestChannel = async (channelId: number) => {
+    if (await channelSendTestMessageToChannelApi(channelId)) {
+        ElMessage({
+            message: "发送成功",
+            type: 'success'
+        })
+    }
+}
 
+let channels = ref<Channel[]>([])
 
 // 搜索按钮
 const searchValue = ref('');
