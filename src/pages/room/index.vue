@@ -29,7 +29,7 @@
                 <el-table-column prop="roomCode" :show-overflow-tooltip="true" label="房间代码" />
                 <!-- <el-table-column prop="roomKey" label="房间密钥" />
                 <el-table-column prop="customRoomName" label="自定义房间代码" /> -->
-                <el-table-column prop="createDate" label="创建时间" width="304">
+                <el-table-column prop="createDate" label="创建时间">
                     <template #default="scope">
                         {{ timeformat(scope.row.createDate) }}
                     </template>
