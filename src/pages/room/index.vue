@@ -238,7 +238,7 @@ const CopyUrl = (url: string, method: string) => {
 
 // 发送测试消息
 const SendTestMessage = async (roomCode: string) => {
-    var result = await roomSendMessageByGetApi(roomCode, "测试内容")
+    var result = await roomSendMessageByGetApi(roomCode, "测试内容\nby pusher")
     ElMessage({
         message: result,
         type: 'success',
