@@ -25,7 +25,8 @@
         </template>
 
         <!-- 二级菜单必须有一个child符合要求 -->
-        <el-sub-menu v-else-if="item.children?.some(route => route.meta?.hidden !== true)" :title="item.name">
+        <el-sub-menu :index="item.path" v-else-if="item.children?.some(route => route.meta?.hidden !== true)"
+            :title="item.name">
             <template #title>
                 <SvgIcon :name="item.meta?.icon ?? 'doller'" />
                 <span style="margin-left: 1rem;">{{ item.meta?.title ?? item.name }}</span>
