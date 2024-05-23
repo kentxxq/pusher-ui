@@ -4,7 +4,7 @@ import { testRoutes } from './modules/test'
 import { roomRoutes } from './modules/room'
 import { channelRoutes } from './modules/channel'
 import { stringTemplateRoutes } from './modules/stringTemplate'
-import { userRoutes } from './modules/user'
+import { userRoutes } from './modules/admin'
 
 const constantRoutes = [
   {
@@ -70,7 +70,7 @@ router.beforeEach(async (to, from) => {
   if (userStore.isTokenValid) {
     // 正常登录
     if (to.name === 'login') {
-      return { name: 'home' }
+      return '/home'
     } else {
       const permissionStore = usePermissionStore()
       // permissionStore没有做持久化. 如果permissionStore.accessedRouters.length === 0 ,说明是在刷新或重新进入界面,router就需要addRoute
@@ -86,16 +86,16 @@ router.beforeEach(async (to, from) => {
         if (to.name === '404') {
           // 动态添加路由后，此处应当重定向到fullPath，否则会加载404页面内容
           return { path: to.fullPath, replace: true, query: to.query }
+        } else {
+          const redirect = decodeURIComponent((from.query.redirect || to.path) as string)
+          console.debug('redirect', redirect, 'to.path', to.path)
+          return to.path === redirect ? { ...to, replace: true } : { path: redirect }
         }
-        // else {
-        //   const redirect = decodeURIComponent((from.query.redirect || to.path) as string)
-        //   console.debug('redirect', redirect, 'to.path', to.path)
-        //   return to.path === redirect ? { ...to, replace: true } : { path: redirect }
-        // }
       }
 
       if (!router.hasRoute(to.name ?? '')) {
-        return { name: 'home' }
+        console.debug(`没有这个路由${to}`)
+        return '/home'
       }
     }
   } else {
