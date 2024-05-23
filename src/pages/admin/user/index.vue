@@ -107,7 +107,7 @@
 </template>
 
 <script setup lang='ts'>
-import { userCreateUserApi, userDeleteUserApi, userGetUsersApi, userUpdateUserRoleApi } from '@/api/user';
+import { adminCreateUserApi, adminDeleteUserApi, adminGetUsersApi, adminUpdateUserRoleApi } from '@/api/admin';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { RoleType, type CreateUserRO, type User } from '@/types/pusher/user'
 import { ElMessage, ElTable, type FormInstance, type FormRules } from 'element-plus';
@@ -135,7 +135,7 @@ onMounted(async () => {
 
 // 搜索按钮
 async function searchUser() {
-    users.value = await userGetUsersApi()
+    users.value = await adminGetUsersApi()
 }
 
 // 创建用户
@@ -163,7 +163,7 @@ function openCreateUser() {
     createUserVisible.value = true
 }
 async function createUser(createUserRO: CreateUserRO) {
-    var userId = await userCreateUserApi(createUserRO)
+    var userId = await adminCreateUserApi(createUserRO)
     ElMessage({
         message: userId !== 0 ? "创建成功" : "创建失败",
         type: 'success',
@@ -209,7 +209,7 @@ const handleSelectionChange = (val: User[]) => {
 }
 const onDeleteUserConfirm = async () => {
     var deleteKeys = selectedRows.value!.map(row => row.id);
-    const result = await userDeleteUserApi(deleteKeys)
+    const result = await adminDeleteUserApi(deleteKeys)
     deleteVisible.value = false;
     await searchUser()
     ElMessage({
@@ -230,7 +230,7 @@ const updateUserRole = (userId: number) => {
 
 const onUpdateUserConfirm = async () => {
     const username = users.value.filter(u => u.id === updateTmpUserId.value)[0].username
-    const result = await userUpdateUserRoleApi({ username: username, roleType: updateTmpUserRole.value })
+    const result = await adminUpdateUserRoleApi({ username: username, roleType: updateTmpUserRole.value })
     ElMessage({
         message: result,
         type: 'success'

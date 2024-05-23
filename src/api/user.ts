@@ -32,37 +32,6 @@ export function userUpdatePasswordApi(updatePasswordRO: UpdatePasswordRO) {
   })
 }
 
-export function userGetUsersApi() {
-  return http<User[]>({
-    url: '/User/GetUsers',
-    method: HttpMethod.GET
-  })
-}
-
-export function userDeleteUserApi(userIdList: Array<number>) {
-  return http<number>({
-    url: '/User/DeleteUser',
-    method: HttpMethod.POST,
-    data: userIdList
-  })
-}
-
-export function userCreateUserApi(createUserRO: CreateUserRO) {
-  return http<number>({
-    url: '/User/CreateUser',
-    method: HttpMethod.POST,
-    data: createUserRO
-  })
-}
-
-export function userUpdateUserRoleApi(updateUserRoleRO: UpdateUserRoleRO) {
-  return http<string>({
-    url: '/User/UpdateUserRole',
-    method: HttpMethod.POST,
-    data: updateUserRoleRO
-  })
-}
-
 export function userGetPasswordApi(username: string) {
   return http<string>({
     url: '/User/GetPassword',
