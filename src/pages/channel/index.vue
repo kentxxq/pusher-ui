@@ -45,6 +45,7 @@
             </el-table>
         </div>
 
+        <!-- 创建 -->
         <el-dialog v-model="createChannelVisible" title="创建管道" @close="onCreateChannelClose">
             <el-form ref="formRef" style="padding: 1rem;" :model="formData" :rules="rules">
                 <el-form-item label="管道名称" prop="channelName">
@@ -59,6 +60,9 @@
                 <el-form-item label="管道地址" prop="channelUrl">
                     <el-input v-model="formData.channelUrl" placeholder="请输入内容" />
                 </el-form-item>
+                <el-form-item label="代理地址" prop="channelProxyUrl">
+                    <el-input v-model="formData.channelProxyUrl" placeholder="请输入内容" />
+                </el-form-item>
             </el-form>
             <template #footer>
                 <div class="dialog-footer">
@@ -70,6 +74,7 @@
             </template>
         </el-dialog>
 
+        <!-- 删除 -->
         <el-dialog v-model="deleteVisible" title="确认删除？" @close="deleteVisible = false">
             <p v-for="selectRow in selectedRows" :key="selectRow.id">
                 <el-tag>{{ channels.filter(r => r.id === selectRow.id)[0].channelName }}</el-tag>
@@ -141,11 +146,13 @@ const formData: CreateChannelRO = reactive({
     channelName: '',
     channelType: 0,
     channelUrl: '',
+    channelProxyUrl: ''
 });
 function resetFormData() {
     formData.channelName = ''
     formData.channelType = 0
     formData.channelUrl = ''
+    formData.channelProxyUrl = ''
 }
 
 const rules = reactive<FormRules<CreateChannelRO>>({
@@ -157,6 +164,9 @@ const rules = reactive<FormRules<CreateChannelRO>>({
     ],
     channelUrl: [
         { required: true, message: '必填', trigger: 'blur' },
+        { type: 'url', message: '请输入正确的 Url 地址', trigger: 'blur' }
+    ],
+    channelProxyUrl: [
         { type: 'url', message: '请输入正确的 Url 地址', trigger: 'blur' }
     ]
 })
