@@ -177,7 +177,7 @@ function openCreateChannel() {
 async function createChannel(createChannelRO: CreateChannelRO) {
     var result = await channelCreateChannelApi(createChannelRO)
     ElMessage({
-        message: `成功创建${result}个管道`,
+        message: `成功创建管道${result}`,
         type: 'success',
     })
 }
