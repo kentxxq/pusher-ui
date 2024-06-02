@@ -164,7 +164,8 @@ const rules = reactive<FormRules<CreateChannelRO>>({
     ],
     channelUrl: [
         { required: true, message: '必填', trigger: 'blur' },
-        { type: 'url', message: '请输入正确的 Url 地址', trigger: 'blur' }
+        // { type: 'url', message: '请输入正确的 Url 地址', trigger: 'blur' },
+        // { type: 'email', message: '请输入正确的 email 地址', trigger: 'blur' }
     ],
     channelProxyUrl: [
         { type: 'url', message: '请输入正确的 Url 地址', trigger: 'blur' }
