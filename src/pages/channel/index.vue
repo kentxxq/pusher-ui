@@ -26,8 +26,7 @@
                 <el-table-column prop="channelName" label="管道名称" width="160" />
                 <el-table-column prop="channelType" label="管道类型" width="160">
                     <template #default="scope">
-                        <el-tag>{{ channelTypeOptions.filter(o => o.enumKey ===
-                            scope.row.channelType)[0].enumDisplayName }}
+                        <el-tag>{{ GetTagDisplayName(scope.row.channelType) }}
                         </el-tag>
                     </template>
                 </el-table-column>
@@ -105,12 +104,18 @@ defineOptions({
     name: 'ChannelIndex'
 })
 const channelTypeOptions = ref<Array<EnumObject>>([])
+// 挂载
 onMounted(async () => {
     channelTypeOptions.value = await enumChannelEnumApi()
     await searchChannel()
 })
 
 // 表格
+const GetTagDisplayName = (channelType: number) => {
+    // const option = channelTypeOptions.value.filter(o => o.enumKey === channelType)[0]
+    // return option ? option.enumDisplayName : ""
+    return channelTypeOptions.value.filter(o => o.enumKey === channelType)[0].enumDisplayName
+}
 // 操作
 const copyUrl = (content: string) => {
     const { toClipboard } = useClipboard()
