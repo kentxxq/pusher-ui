@@ -1,4 +1,4 @@
-import type { Channel, CreateChannelRO } from '@/types/pusher/channel'
+import type { Channel, CreateChannelRO, UpdateChannelRO } from '@/types/pusher/channel'
 import { HttpMethod } from '@/utils/enums'
 import { http } from '@/utils/request'
 
