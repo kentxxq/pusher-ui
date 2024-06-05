@@ -38,7 +38,7 @@
             </el-table>
         </div>
 
-        <!-- 新增 -->
+        <!-- 新增/修改 -->
         <el-dialog width="80%" v-model="dialogVisible" :title="dialogTitle" @close="onDialogStringTemplateClose">
             <el-form ref="formRef" style="padding: 1rem;" :model="dialogStringTemplate" :rules="rules">
                 <el-form-item label="模板名称" prop="templateName">
@@ -95,21 +95,6 @@
                 </div>
             </template>
         </el-dialog>
-
-        <!-- 修改/编辑 -->
-        <!-- <el-dialog v-model="updateVisible" title="修改模板" @close="onCreateStringTemplateClose">
-            <div style="display: flex;justify-content: center;align-items: center;">
-                qwer
-            </div>
-            <template #footer>
-                <div class="dialog-footer">
-                    <el-button @click="onRelationClose">取消</el-button>
-                    <el-button type="primary" @click="onRelationConfirm">
-                        确认
-                    </el-button>
-                </div>
-            </template>
-        </el-dialog> -->
     </div>
 </template>
 

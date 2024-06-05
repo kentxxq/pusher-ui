@@ -1,5 +1,4 @@
 import type { Channel, CreateChannelRO } from '@/types/pusher/channel'
-import type { UpdateRoomChannelRO } from '@/types/pusher/room'
 import { HttpMethod } from '@/utils/enums'
 import { http } from '@/utils/request'
 
@@ -31,5 +30,13 @@ export function channelSendTestMessageToChannelApi(channelId: number) {
     url: '/Channel/SendTestMessageToChannel',
     method: HttpMethod.GET,
     params: { channelId }
+  })
+}
+
+export function channelUpdateChannelApi(updateChannelRO: UpdateChannelRO) {
+  return http<boolean>({
+    url: '/Channel/UpdateChannel',
+    method: HttpMethod.POST,
+    data: updateChannelRO
   })
 }

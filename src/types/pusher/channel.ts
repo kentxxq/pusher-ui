@@ -10,9 +10,18 @@ export interface Channel {
   channelType: ChannelEnum
   channelUrl: string
   channelProxyUrl: string | null
+  userId: number
 }
 
 export interface CreateChannelRO {
+  channelName: string
+  channelType: ChannelEnum
+  channelUrl: string
+  channelProxyUrl: string | null
+}
+
+export interface UpdateChannelRO {
+  id: number
   channelName: string
   channelType: ChannelEnum
   channelUrl: string

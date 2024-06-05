@@ -36,16 +36,16 @@
                         <el-button type="success" size="small" @click.stop="TestChannel(scope.row.id)">
                             发送测试信息
                         </el-button>
-                        <el-button type="primary" size="small" @click.stop="copyUrl(scope.row.channelUrl)">
-                            复制url
+                        <el-button type="primary" size="small" @click.stop="openUpdateChannel(scope.row.id)">
+                            编辑管道
                         </el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
 
-        <!-- 创建 -->
-        <el-dialog v-model="createChannelVisible" title="创建管道" @close="onCreateChannelClose">
+        <!-- 创建/修改 -->
+        <el-dialog v-model="createOrUpdateChannelVisible" :title="dialogTitle" @close="onCreateChannelClose">
             <el-form ref="formRef" style="padding: 1rem;" :model="formData" :rules="rules">
                 <el-form-item label="管道名称" prop="channelName">
                     <el-input v-model="formData.channelName" placeholder="请输入内容" />
@@ -66,7 +66,7 @@
             <template #footer>
                 <div class="dialog-footer">
                     <el-button @click="onCreateChannelClose">取消</el-button>
-                    <el-button type="primary" @click="onCreateChannelConfirm">
+                    <el-button type="primary" @click="onCreateOrUpdateChannelConfirm">
                         确认
                     </el-button>
                 </div>
@@ -92,8 +92,8 @@
 
 <script setup lang='ts'>
 import { computed, onMounted, reactive, ref } from 'vue';
-import type { Channel, CreateChannelRO } from '@/types/pusher/channel'
-import { channelCreateChannelApi, channelDeleteChannelApi, channelGetUserChannelsApi, channelSendTestMessageToChannelApi, } from '@/api/channel';
+import type { Channel, CreateChannelRO, UpdateChannelRO } from '@/types/pusher/channel'
+import { channelCreateChannelApi, channelDeleteChannelApi, channelGetUserChannelsApi, channelSendTestMessageToChannelApi, channelUpdateChannelApi, } from '@/api/channel';
 import type { EnumObject } from '@/types/pusher/common';
 import { enumChannelEnumApi } from '@/api/enumapi';
 import { ElMessage, ElTable, type FormInstance, type FormRules } from 'element-plus';
@@ -117,14 +117,6 @@ const GetTagDisplayName = (channelType: number) => {
     return channelTypeOptions.value.filter(o => o.enumKey === channelType)[0].enumDisplayName
 }
 // 操作
-const copyUrl = (content: string) => {
-    const { toClipboard } = useClipboard()
-    toClipboard(content)
-    ElMessage({
-        message: `已拷贝到粘贴板`,
-        type: 'success',
-    })
-}
 const TestChannel = async (channelId: number) => {
     if (await channelSendTestMessageToChannelApi(channelId)) {
         ElMessage({
@@ -145,7 +137,9 @@ async function searchChannel() {
     channels.value = await channelGetUserChannelsApi()
 }
 
-// 创建管道
+// 创建/修改 管道
+const dialogTitle = ref("")
+const updateChannelId = ref(0)
 const formRef = ref<FormInstance>()
 const formData: CreateChannelRO = reactive({
     channelName: '',
@@ -176,9 +170,20 @@ const rules = reactive<FormRules<CreateChannelRO>>({
         { type: 'url', message: '请输入正确的 Url 地址', trigger: 'blur' }
     ]
 })
-const createChannelVisible = ref(false)
+const createOrUpdateChannelVisible = ref(false)
 function openCreateChannel() {
-    createChannelVisible.value = true
+    createOrUpdateChannelVisible.value = true
+    dialogTitle.value = "创建管道"
+}
+function openUpdateChannel(channelId: number) {
+    const channel = channels.value.filter(c => c.id === channelId)[0]
+    formData.channelName = channel.channelName
+    formData.channelProxyUrl = channel.channelProxyUrl
+    formData.channelType = channel.channelType
+    formData.channelUrl = channel.channelUrl
+    createOrUpdateChannelVisible.value = true
+    dialogTitle.value = "修改管道"
+    updateChannelId.value = channel.id
 }
 async function createChannel(createChannelRO: CreateChannelRO) {
     var result = await channelCreateChannelApi(createChannelRO)
@@ -187,12 +192,24 @@ async function createChannel(createChannelRO: CreateChannelRO) {
         type: 'success',
     })
 }
-async function onCreateChannelConfirm() {
+async function updateChannel(createChannelRO: CreateChannelRO) {
+    var result = await channelUpdateChannelApi({ ...createChannelRO, id: updateChannelId.value })
+    ElMessage({
+        message: `成功修改管道${result}`,
+        type: 'success',
+    })
+}
+async function onCreateOrUpdateChannelConfirm() {
     if (!formRef.value) return
     await formRef.value.validate(async (valid, fields) => {
         if (valid) {
-            await createChannel({ ...formData })
-            createChannelVisible.value = false
+            if (dialogTitle.value === '创建管道') {
+                await createChannel({ ...formData })
+            } else if (dialogTitle.value === '修改管道') {
+                await updateChannel({ ...formData })
+            }
+
+            createOrUpdateChannelVisible.value = false
             resetFormData()
             await searchChannel()
         } else {
@@ -205,7 +222,7 @@ async function onCreateChannelConfirm() {
 }
 function onCreateChannelClose() {
     resetFormData()
-    createChannelVisible.value = false
+    createOrUpdateChannelVisible.value = false
 }
 
 
