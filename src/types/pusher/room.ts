@@ -1,3 +1,8 @@
+export enum MessageEnum {
+  Text,
+  Image
+}
+
 export interface Room {
   id: number
   roomName: string
@@ -10,4 +15,11 @@ export interface Room {
 export interface UpdateRoomChannelRO {
   roomId: number
   channelIds: number[]
+}
+
+export interface RoomMessageHistorySO {
+  id: number
+  messageType: MessageEnum
+  content: string
+  recordTime: Date
 }

@@ -1,5 +1,5 @@
 import type { Channel } from '@/types/pusher/channel'
-import type { Room, UpdateRoomChannelRO } from '@/types/pusher/room'
+import type { Room, RoomMessageHistorySO, UpdateRoomChannelRO } from '@/types/pusher/room'
 import { HttpMethod } from '@/utils/enums'
 import { http } from '@/utils/request'
 
@@ -47,5 +47,13 @@ export function roomUpdateRoomChannelApi(updateRoomChannelRO: UpdateRoomChannelR
     url: '/Room/UpdateRoomChannel',
     method: HttpMethod.POST,
     data: updateRoomChannelRO
+  })
+}
+
+export function roomGetRoomMessageHistoryApi(roomId: number) {
+  return http<RoomMessageHistorySO[]>({
+    url: '/Room/GetRoomMessageHistory',
+    method: HttpMethod.GET,
+    params: { roomid: roomId }
   })
 }

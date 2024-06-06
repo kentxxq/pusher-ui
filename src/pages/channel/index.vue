@@ -42,6 +42,9 @@
                         <el-button type="info" size="small" @click.stop="GetChannelJoinedRooms(scope.row.id)">
                             加入的房间
                         </el-button>
+                        <el-button size="small" @click.stop="ShowChannelMessageHistory(scope.row.id)">
+                            消息记录
+                        </el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -105,13 +108,35 @@
                 </div>
             </template>
         </el-dialog>
+
+        <!-- 消息记录 -->
+        <el-dialog v-model="historyVisible" title="消息记录" @close="historyVisible = false">
+            <el-table :data="history" :table-layout="'auto'">
+                <el-table-column prop="content" label="文本内容" />
+                <el-table-column prop="recordTime" label="时间">
+                    <template #default="scope">
+                        {{ timeformat(scope.row.recordTime) }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="status" label="状态" />
+                <el-table-column prop="success" label="是否处理成功" />
+                <el-table-column prop="result" label="处理结果" />
+            </el-table> <template #footer>
+                <div class="dialog-footer">
+                    <el-button type="primary" @click="historyVisible = false">
+                        确认
+                    </el-button>
+                </div>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
 <script setup lang='ts'>
+import { timeformat } from '@/utils/convert';
 import { computed, onMounted, reactive, ref } from 'vue';
-import type { Channel, ChannelJoinedRoomsSO, CreateChannelRO, UpdateChannelRO } from '@/types/pusher/channel'
-import { channelCreateChannelApi, channelDeleteChannelApi, channelGetChannelJoinedRoomsApi, channelGetUserChannelsApi, channelSendTestMessageToChannelApi, channelUpdateChannelApi, } from '@/api/channel';
+import type { Channel, ChannelJoinedRoomsSO, ChannelMessageHistorySO, CreateChannelRO, UpdateChannelRO } from '@/types/pusher/channel'
+import { channelCreateChannelApi, channelDeleteChannelApi, channelGetChannelJoinedRoomsApi, channelGetUserChannelsApi, channelSendTestMessageToChannelApi, channelUpdateChannelApi, channelGetChannelMessageHistoryApi } from '@/api/channel';
 import type { EnumObject } from '@/types/pusher/common';
 import { enumChannelEnumApi } from '@/api/enumapi';
 import { ElMessage, ElTable, type FormInstance, type FormRules } from 'element-plus';
@@ -149,6 +174,15 @@ const GetChannelJoinedRooms = async (channelId: number) => {
     joinedRoomsVisible.value = true
     joinedRooms.value = await channelGetChannelJoinedRoomsApi(channelId)
 }
+// 消息记录
+const historyVisible = ref(false)
+const history = ref<ChannelMessageHistorySO[]>([])
+const ShowChannelMessageHistory = async (channelId: number) => {
+    history.value = await channelGetChannelMessageHistoryApi(channelId)
+    historyVisible.value = true
+}
+
+
 
 let channels = ref<Channel[]>([])
 

@@ -1,7 +1,12 @@
+import type { MessageEnum } from './room'
+
 enum ChannelEnum {
   DingTalk,
   ComWechat,
-  Lark
+  Lark,
+  Telegram,
+  Bark,
+  Email
 }
 
 export interface Channel {
@@ -34,4 +39,19 @@ export interface ChannelJoinedRoomsSO {
   roomCode: string
   userId: number
   createDate: Date
+}
+
+enum ChannelMessageStatus {
+  Todo,
+  Done
+}
+
+export interface ChannelMessageHistorySO {
+  id: number
+  messageType: MessageEnum
+  content: string
+  recordTime: Date
+  status: ChannelMessageStatus
+  success: boolean
+  result?: string | null
 }

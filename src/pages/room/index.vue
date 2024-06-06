@@ -40,13 +40,16 @@
                             关联管道
                         </el-button>
                         <el-button type="success" size="small" @click.stop="SendTestMessage(scope.row.roomCode)">
-                            发送测试消息
+                            发送测试信息
                         </el-button>
                         <el-button type="info" size="small" @click.stop="CopyUrl(scope.row.roomCode, 'Get')">
                             复制get地址
                         </el-button>
                         <el-button type="info" size="small" @click.stop="CopyUrl(scope.row.roomCode, 'Post')">
                             复制post地址
+                        </el-button>
+                        <el-button size="small" @click.stop="ShowRoomMessageHistory(scope.row.id)">
+                            消息记录
                         </el-button>
                     </template>
                 </el-table-column>
@@ -95,13 +98,31 @@
                 </div>
             </template>
         </el-dialog>
+
+        <!-- 消息记录 -->
+        <el-dialog v-model="historyVisible" title="消息记录" @close="historyVisible = false">
+            <el-table :data="history" :table-layout="'auto'">
+                <el-table-column prop="content" label="文本内容" width="180" />
+                <el-table-column prop="recordTime" label="时间">
+                    <template #default="scope">
+                        {{ timeformat(scope.row.recordTime) }}
+                    </template>
+                </el-table-column>
+            </el-table> <template #footer>
+                <div class="dialog-footer">
+                    <el-button type="primary" @click="historyVisible = false">
+                        确认
+                    </el-button>
+                </div>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
 <script setup lang='ts'>
-import { roomCreateRoomApi, roomDeleteRoomApi, roomGetRoomsApi, roomSendMessageByGetApi, roomGetRoomChannelsApi, roomUpdateRoomChannelApi } from '@/api/room';
+import { roomCreateRoomApi, roomDeleteRoomApi, roomGetRoomsApi, roomSendMessageByGetApi, roomGetRoomChannelsApi, roomUpdateRoomChannelApi, roomGetRoomMessageHistoryApi } from '@/api/room';
 import { computed, onMounted, ref } from 'vue';
-import type { Room } from '@/types/pusher/room'
+import type { Room, RoomMessageHistorySO } from '@/types/pusher/room'
 import { ElMessage, ElTable } from 'element-plus';
 import { timeformat } from '@/utils/convert';
 import type { Channel } from '@/types/pusher/channel';
@@ -245,6 +266,14 @@ const SendTestMessage = async (roomCode: string) => {
     })
 }
 
+
+// 查看消息记录
+const historyVisible = ref(false)
+const history = ref<RoomMessageHistorySO[]>([])
+const ShowRoomMessageHistory = async (roomId: number) => {
+    history.value = await roomGetRoomMessageHistoryApi(roomId)
+    historyVisible.value = true
+}
 
 </script>
 

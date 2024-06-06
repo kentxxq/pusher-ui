@@ -1,6 +1,7 @@
 import type {
   Channel,
   ChannelJoinedRoomsSO,
+  ChannelMessageHistorySO,
   CreateChannelRO,
   UpdateChannelRO
 } from '@/types/pusher/channel'
@@ -49,6 +50,14 @@ export function channelUpdateChannelApi(updateChannelRO: UpdateChannelRO) {
 export function channelGetChannelJoinedRoomsApi(channelId: number) {
   return http<ChannelJoinedRoomsSO[]>({
     url: '/Channel/GetChannelJoinedRooms',
+    method: HttpMethod.GET,
+    params: { channelId }
+  })
+}
+
+export function channelGetChannelMessageHistoryApi(channelId: number) {
+  return http<ChannelMessageHistorySO[]>({
+    url: '/Channel/GetChannelMessageHistory',
     method: HttpMethod.GET,
     params: { channelId }
   })
