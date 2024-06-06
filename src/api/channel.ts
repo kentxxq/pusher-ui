@@ -1,4 +1,9 @@
-import type { Channel, CreateChannelRO, UpdateChannelRO } from '@/types/pusher/channel'
+import type {
+  Channel,
+  ChannelJoinedRoomsSO,
+  CreateChannelRO,
+  UpdateChannelRO
+} from '@/types/pusher/channel'
 import { HttpMethod } from '@/utils/enums'
 import { http } from '@/utils/request'
 
@@ -38,5 +43,13 @@ export function channelUpdateChannelApi(updateChannelRO: UpdateChannelRO) {
     url: '/Channel/UpdateChannel',
     method: HttpMethod.POST,
     data: updateChannelRO
+  })
+}
+
+export function channelGetChannelJoinedRoomsApi(channelId: number) {
+  return http<ChannelJoinedRoomsSO[]>({
+    url: '/Channel/GetChannelJoinedRooms',
+    method: HttpMethod.GET,
+    params: { channelId }
   })
 }

@@ -27,3 +27,11 @@ export interface UpdateChannelRO {
   channelUrl: string
   channelProxyUrl: string | null
 }
+
+export interface ChannelJoinedRoomsSO {
+  id: number
+  roomName: string
+  roomCode: string
+  userId: number
+  createDate: Date
+}

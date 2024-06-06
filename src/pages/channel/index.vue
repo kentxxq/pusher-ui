@@ -39,6 +39,9 @@
                         <el-button type="primary" size="small" @click.stop="openUpdateChannel(scope.row.id)">
                             编辑管道
                         </el-button>
+                        <el-button type="info" size="small" @click.stop="GetChannelJoinedRooms(scope.row.id)">
+                            加入的房间
+                        </el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -87,17 +90,31 @@
                 </div>
             </template>
         </el-dialog>
+
+        <!-- 查看加入的rooms -->
+        <el-dialog v-model="joinedRoomsVisible" title="加入的rooms" @close="joinedRoomsVisible = false">
+            <template v-for="room in joinedRooms" :key="room.id">
+                <el-tag style="margin: 1rem;">{{ room.roomName }}
+                </el-tag>
+            </template>
+            <template #footer>
+                <div class="dialog-footer">
+                    <el-button type="primary" @click="joinedRoomsVisible = false">
+                        确认
+                    </el-button>
+                </div>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
 <script setup lang='ts'>
 import { computed, onMounted, reactive, ref } from 'vue';
-import type { Channel, CreateChannelRO, UpdateChannelRO } from '@/types/pusher/channel'
-import { channelCreateChannelApi, channelDeleteChannelApi, channelGetUserChannelsApi, channelSendTestMessageToChannelApi, channelUpdateChannelApi, } from '@/api/channel';
+import type { Channel, ChannelJoinedRoomsSO, CreateChannelRO, UpdateChannelRO } from '@/types/pusher/channel'
+import { channelCreateChannelApi, channelDeleteChannelApi, channelGetChannelJoinedRoomsApi, channelGetUserChannelsApi, channelSendTestMessageToChannelApi, channelUpdateChannelApi, } from '@/api/channel';
 import type { EnumObject } from '@/types/pusher/common';
 import { enumChannelEnumApi } from '@/api/enumapi';
 import { ElMessage, ElTable, type FormInstance, type FormRules } from 'element-plus';
-import useClipboard from 'vue-clipboard3'
 
 // 初始化/生命周期
 defineOptions({
@@ -124,6 +141,13 @@ const TestChannel = async (channelId: number) => {
             type: 'success'
         })
     }
+}
+// 加入的房间
+const joinedRoomsVisible = ref(false)
+const joinedRooms = ref<ChannelJoinedRoomsSO[]>()
+const GetChannelJoinedRooms = async (channelId: number) => {
+    joinedRoomsVisible.value = true
+    joinedRooms.value = await channelGetChannelJoinedRoomsApi(channelId)
 }
 
 let channels = ref<Channel[]>([])
