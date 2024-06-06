@@ -101,9 +101,10 @@
 
         <!-- 消息记录 -->
         <el-dialog v-model="historyVisible" title="消息记录" @close="historyVisible = false">
-            <el-table :data="history" :table-layout="'auto'">
+            <el-table :data="history" :table-layout="'auto'"
+                :default-sort="{ prop: 'recordTime', order: 'descending' }">
                 <el-table-column prop="content" label="文本内容" width="180" />
-                <el-table-column prop="recordTime" label="时间">
+                <el-table-column prop="recordTime" label="时间" sortable>
                     <template #default="scope">
                         {{ timeformat(scope.row.recordTime) }}
                     </template>
