@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import pinia from './stores'
 import App from './App.vue'
 import router from './router'
+import VueECharts from 'vue-echarts' // 导入VueECharts组件
 
 const app = createApp(App)
 
@@ -15,5 +16,5 @@ import 'virtual:svg-icons-register'
 
 import SvgIcon from '@/components/SvgIcon/index.vue'
 app.component('SvgIcon', SvgIcon)
-
+app.component('v-chart', VueECharts)
 app.mount('#app')
