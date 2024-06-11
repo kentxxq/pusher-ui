@@ -4,6 +4,7 @@ import App from './App.vue'
 import router from './router'
 
 const app = createApp(App)
+app.config.globalProperties.$tt3 = '170'
 
 app.use(pinia)
 app.use(router)
