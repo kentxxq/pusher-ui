@@ -1,6 +1,6 @@
 <template>
     <div>
-        欢迎来到这里, 说明你登录成功了
+        <!-- 欢迎来到这里, 说明你登录成功了 -->
         <v-chart class="chart" :option="option" />
     </div>
 </template>
@@ -13,81 +13,73 @@ defineOptions({
     name: 'page-home'
 })
 
-// import "echarts";
-// import { THEME_KEY } from 'vue-echarts';
-// import { provide, ref } from 'vue';
-
 import { use } from 'echarts/core'
-import { PieChart } from 'echarts/charts'
+import { LineChart } from 'echarts/charts'
 import {
     TitleComponent,
     TooltipComponent,
-    LegendComponent
+    ToolboxComponent,
+    GridComponent
 } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
 import type { ComposeOption } from 'echarts/core'
-import type { PieSeriesOption } from 'echarts/charts'
+import type { LineSeriesOption } from 'echarts/charts'
 import type {
     TitleComponentOption,
     TooltipComponentOption,
-    LegendComponentOption
+    ToolboxComponentOption,
+    GridComponentOption
 } from 'echarts/components'
-import { provide, ref } from 'vue';
-import { THEME_KEY } from 'vue-echarts';
+import { ref } from 'vue';
 
 use([
     TitleComponent,
     TooltipComponent,
-    LegendComponent,
-    PieChart,
+    ToolboxComponent,
+    GridComponent,
+    LineChart,
     CanvasRenderer
 ])
 
 type EChartsOption = ComposeOption<
     | TitleComponentOption
     | TooltipComponentOption
-    | LegendComponentOption
-    | PieSeriesOption
+    | ToolboxComponentOption
+    | GridComponentOption
+    | LineSeriesOption
 >
 
 
 
-provide(THEME_KEY, "dark");
 
 const option = ref<EChartsOption>({
     title: {
-        text: "Traffic Sources",
-        left: "center"
+        text: "请求数走势图"
     },
     tooltip: {
-        trigger: "item",
-        formatter: "{a} <br/>{b} : {c} ({d}%)"
+        trigger: 'axis'
     },
-    legend: {
-        orient: "vertical",
-        left: "left",
-        data: ["Direct", "Email", "Ad Networks", "Video Ads", "Search Engines"]
+    toolbox: {
+        show: true,
+        feature: {
+            dataView: { readOnly: false },
+            // restore: {},
+            saveAsImage: {}
+        }
+    },
+    xAxis: {
+        type: 'category',
+        // boundaryGap: false,
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    },
+    yAxis: {
+        type: 'value'
     },
     series: [
         {
-            name: "Traffic Sources",
-            type: "pie",
-            radius: "55%",
-            center: ["50%", "60%"],
-            data: [
-                { value: 335, name: "Direct" },
-                { value: 310, name: "Email" },
-                { value: 234, name: "Ad Networks" },
-                { value: 135, name: "Video Ads" },
-                { value: 1548, name: "Search Engines" }
-            ],
-            emphasis: {
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: "rgba(0, 0, 0, 0.5)"
-                }
-            }
+            data: [150, 230, 224, 218, 135, 147, 260],
+            type: 'line',
+            smooth: true
         }
     ]
 });
