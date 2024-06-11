@@ -29,7 +29,7 @@
                 <el-table-column prop="roomCode" :show-overflow-tooltip="true" label="房间代码" />
                 <!-- <el-table-column prop="roomKey" label="房间密钥" />
                 <el-table-column prop="customRoomName" label="自定义房间代码" /> -->
-                <el-table-column prop="createDate" label="创建时间">
+                <el-table-column prop="createDate" label="创建时间" :width="dateFixedWidth">
                     <template #default="scope">
                         {{ timeformat(scope.row.createDate) }}
                     </template>
@@ -103,8 +103,8 @@
         <el-dialog v-model="historyVisible" title="消息记录" @close="historyVisible = false">
             <el-table :data="history" :table-layout="'auto'"
                 :default-sort="{ prop: 'recordTime', order: 'descending' }">
-                <el-table-column prop="content" label="文本内容" width="180" />
-                <el-table-column prop="recordTime" label="时间" sortable>
+                <el-table-column prop="content" label="文本内容" />
+                <el-table-column prop="recordTime" label="时间" sortable :width="dateFixedWidth">
                     <template #default="scope">
                         {{ timeformat(scope.row.recordTime) }}
                     </template>
@@ -136,7 +136,7 @@ defineOptions({
     name: 'RoomIndex'
 })
 
-
+const dateFixedWidth: string = import.meta.env.VITE_DATE_FIXED_WIDTH;
 let rooms = ref<Room[]>([])
 const searchValue = ref('');
 const searchData = computed(() => {

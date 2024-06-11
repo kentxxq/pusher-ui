@@ -5,6 +5,7 @@ import router from './router'
 import VueECharts from 'vue-echarts' // 导入VueECharts组件
 
 const app = createApp(App)
+app.config.globalProperties.$tt3 = '170'
 
 app.use(pinia)
 app.use(router)

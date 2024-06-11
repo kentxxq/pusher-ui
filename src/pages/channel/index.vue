@@ -114,7 +114,7 @@
             <el-table :data="history" :table-layout="'auto'"
                 :default-sort="{ prop: 'recordTime', order: 'descending' }">
                 <el-table-column prop="content" label="文本内容" />
-                <el-table-column prop="recordTime" label="时间" sortable>
+                <el-table-column prop="recordTime" label="时间" sortable :width="dateFixedWidth">
                     <template #default="scope">
                         {{ timeformat(scope.row.recordTime) }}
                     </template>
@@ -146,6 +146,7 @@ import { ElMessage, ElTable, type FormInstance, type FormRules } from 'element-p
 defineOptions({
     name: 'ChannelIndex'
 })
+const dateFixedWidth: string = import.meta.env.VITE_DATE_FIXED_WIDTH;
 const channelTypeOptions = ref<Array<EnumObject>>([])
 // 挂载
 onMounted(async () => {
