@@ -22,11 +22,3 @@ declare module 'vue-router' {
     order?: number
   }
 }
-
-declare module 'vue' {
-  interface ComponentCustomProperties {
-    $tt1: typeof axios
-    $tt2: (key: string) => string
-    $tt3: string
-  }
-}
