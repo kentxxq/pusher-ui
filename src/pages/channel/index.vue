@@ -116,7 +116,7 @@
                 <el-table-column prop="content" label="文本内容" />
                 <el-table-column prop="recordTime" label="时间" sortable :width="dateFixedWidth">
                     <template #default="scope">
-                        {{ timeformat(scope.row.recordTime) }}
+                        {{ dateStringFormat(scope.row.recordTime) }}
                     </template>
                 </el-table-column>
                 <el-table-column prop="status" label="状态" />
@@ -134,7 +134,7 @@
 </template>
 
 <script setup lang='ts'>
-import { timeformat } from '@/utils/convert';
+import { dateStringFormat } from '@/utils/convert';
 import { computed, onMounted, reactive, ref } from 'vue';
 import type { Channel, ChannelJoinedRoomsSO, ChannelMessageHistorySO, CreateChannelRO, UpdateChannelRO } from '@/types/pusher/channel'
 import { channelCreateChannelApi, channelDeleteChannelApi, channelGetChannelJoinedRoomsApi, channelGetUserChannelsApi, channelSendTestMessageToChannelApi, channelUpdateChannelApi, channelGetChannelMessageHistoryApi } from '@/api/channel';

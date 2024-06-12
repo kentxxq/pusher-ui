@@ -125,7 +125,7 @@ import { roomCreateRoomApi, roomDeleteRoomApi, roomGetRoomsApi, roomSendMessageB
 import { computed, onMounted, ref } from 'vue';
 import type { Room, RoomMessageHistorySO } from '@/types/pusher/room'
 import { ElMessage, ElTable } from 'element-plus';
-import { timeformat } from '@/utils/convert';
+import { dateStringFormat } from '@/utils/convert';
 import type { Channel } from '@/types/pusher/channel';
 import { channelGetUserChannelsApi } from '@/api/channel';
 import useClipboard from 'vue-clipboard3'

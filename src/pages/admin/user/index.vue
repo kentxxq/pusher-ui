@@ -111,7 +111,7 @@ import { adminCreateUserApi, adminDeleteUserApi, adminGetUsersApi, adminUpdateUs
 import { computed, onMounted, reactive, ref } from 'vue';
 import { RoleType, type CreateUserRO, type User } from '@/types/pusher/user'
 import { ElMessage, ElTable, type FormInstance, type FormRules } from 'element-plus';
-import { timeformat } from '@/utils/convert';
+import { dateStringFormat } from '@/utils/convert';
 import type { EnumObject } from '@/types/pusher/common';
 import { enumRoleEnumApi } from '@/api/enumapi';
 
