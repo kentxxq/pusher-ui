@@ -1,3 +1,4 @@
+import type { DateCountSO, TypeIntValueSO } from '@/types/pusher/dashboard'
 import type { CreateUserRO, UpdateUserRoleRO, User } from '@/types/pusher/user'
 import { HttpMethod } from '@/utils/enums'
 import { http } from '@/utils/request'
@@ -44,5 +45,28 @@ export function adminDeleteUserApi(userIdList: Array<number>) {
     url: '/Admin/DeleteUser',
     method: HttpMethod.POST,
     data: userIdList
+  })
+}
+
+export function adminGetRecentMessageCountGroupByDayApi(days: number) {
+  return http<Array<DateCountSO>>({
+    url: '/Admin/GetRecentMessageCountGroupByDay',
+    method: HttpMethod.GET,
+    params: { days }
+  })
+}
+
+export function adminGetRecentMessageCountGroupByUserApi(days: number) {
+  return http<Array<TypeIntValueSO>>({
+    url: '/Admin/GetRecentMessageCountGroupByUser',
+    method: HttpMethod.GET,
+    params: { days }
+  })
+}
+
+export function adminGetChannelCountGroupByChannelTypeApi() {
+  return http<Array<TypeIntValueSO>>({
+    url: '/Admin/GetChannelCountGroupByChannelType',
+    method: HttpMethod.GET
   })
 }

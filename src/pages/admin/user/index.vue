@@ -34,7 +34,7 @@
                 </el-table-column>
                 <el-table-column prop="lastLoginTime" label="最后登录时间" width="304">
                     <template #default="scope">
-                        {{ scope.row.lastLoginTime ? timeformat(scope.row.lastLoginTime) : '' }}
+                        {{ scope.row.lastLoginTime ? dateStringFormat(scope.row.lastLoginTime) : '' }}
                     </template>
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="120">
@@ -117,7 +117,7 @@ import { enumRoleEnumApi } from '@/api/enumapi';
 
 
 defineOptions({
-    name: 'UserIndex'
+    name: 'admin-user-index'
 })
 
 

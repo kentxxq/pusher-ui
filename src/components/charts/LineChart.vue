@@ -1,5 +1,5 @@
 <template>
-    <v-chart class="chart" :option="chartOption" />
+    <v-chart class="chart" :autoresize="true" :option="chartOption" />
 </template>
 
 <script lang="ts" setup>
@@ -12,7 +12,7 @@ import { LineChart } from 'echarts/charts'
 import {
     TitleComponent,
     TooltipComponent,
-    ToolboxComponent,
+    // ToolboxComponent,
     GridComponent
 } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
@@ -21,7 +21,7 @@ import type { LineSeriesOption } from 'echarts/charts'
 import type {
     TitleComponentOption,
     TooltipComponentOption,
-    ToolboxComponentOption,
+    // ToolboxComponentOption,
     GridComponentOption
 } from 'echarts/components'
 import { ref, watch } from 'vue';
@@ -29,7 +29,7 @@ import { ref, watch } from 'vue';
 use([
     TitleComponent,
     TooltipComponent,
-    ToolboxComponent,
+    // ToolboxComponent,
     GridComponent,
     LineChart,
     CanvasRenderer
@@ -38,7 +38,7 @@ use([
 type EChartsOption = ComposeOption<
     | TitleComponentOption
     | TooltipComponentOption
-    | ToolboxComponentOption
+    // | ToolboxComponentOption
     | GridComponentOption
     | LineSeriesOption
 >
@@ -49,14 +49,16 @@ type EChartsOption = ComposeOption<
 //     seriesData: Array<[string, number]>
 // }>();
 
-const props = withDefaults(defineProps<{ titleText: string, seriesData: Array<[string, number]> }>(), {
+const props = withDefaults(defineProps<{ titleText: string, seriesDataName: string, seriesData: Array<[string, number]> }>(), {
     titleText: () => "默认标题",
+    seriesDataName: () => "默认数据名称",
     seriesData: () => []
 })
 
 const chartOption = ref<EChartsOption>({
     title: {
-        text: props.titleText
+        text: props.titleText,
+        left: 'center'
     },
     tooltip: {
         trigger: 'axis',
@@ -71,13 +73,13 @@ const chartOption = ref<EChartsOption>({
         //     return `${formattedDate}<br/>请求数: ${value}`;
         // }
     },
-    toolbox: {
-        show: true,
-        feature: {
-            dataView: { readOnly: false },
-            saveAsImage: {}
-        }
-    },
+    // toolbox: {
+    //     show: true,
+    //     feature: {
+    //         dataView: { readOnly: false },
+    //         saveAsImage: {}
+    //     }
+    // },
     xAxis: {
         type: 'time',
         axisLabel: {
@@ -95,7 +97,7 @@ const chartOption = ref<EChartsOption>({
     },
     series: [
         {
-            name: '消息数',
+            name: props.seriesDataName,
             data: props.seriesData,
             type: 'line',
             smooth: true

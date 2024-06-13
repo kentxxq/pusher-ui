@@ -32,7 +32,7 @@ import { adminResetDatabaseApi, adminResetSystemStringTemplatesApi } from '@/api
 import { ElMessage } from 'element-plus';
 
 defineOptions({
-    name: 'db-index'
+    name: 'admin-db-index'
 })
 
 const resetDatabase = async () => {

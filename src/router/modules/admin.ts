@@ -14,12 +14,22 @@ export const userRoutes: Array<RouteRecordRaw> = [
     },
     children: [
       {
+        path: '/admin/dashboard',
+        name: 'dashboard-index',
+        component: () => import('@/pages/admin/dashboard/index.vue'),
+        meta: {
+          title: '仪表盘',
+          order: 1,
+          icon: 'dashboard'
+        }
+      },
+      {
         path: '/admin/user',
         name: 'user-index',
         component: () => import('@/pages/admin/user/index.vue'),
         meta: {
           title: '用户管理',
-          order: 1,
+          order: 2,
           icon: 'user'
         }
       },
@@ -29,8 +39,8 @@ export const userRoutes: Array<RouteRecordRaw> = [
         component: () => import('@/pages/admin/db/index.vue'),
         meta: {
           title: '数据库管理',
-          order: 2,
-          icon: 'user'
+          order: 3,
+          icon: 'db'
         }
       }
     ]

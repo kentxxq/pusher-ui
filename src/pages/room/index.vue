@@ -31,7 +31,7 @@
                 <el-table-column prop="customRoomName" label="自定义房间代码" /> -->
                 <el-table-column prop="createDate" label="创建时间" :width="dateFixedWidth">
                     <template #default="scope">
-                        {{ timeformat(scope.row.createDate) }}
+                        {{ dateStringFormat(scope.row.createDate) }}
                     </template>
                 </el-table-column>
                 <el-table-column fixed="right" label="操作">
@@ -106,7 +106,7 @@
                 <el-table-column prop="content" label="文本内容" />
                 <el-table-column prop="recordTime" label="时间" sortable :width="dateFixedWidth">
                     <template #default="scope">
-                        {{ timeformat(scope.row.recordTime) }}
+                        {{ dateStringFormat(scope.row.recordTime) }}
                     </template>
                 </el-table-column>
             </el-table> <template #footer>

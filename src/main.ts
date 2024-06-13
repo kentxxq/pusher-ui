@@ -3,6 +3,8 @@ import pinia from './stores'
 import App from './App.vue'
 import router from './router'
 import VueECharts from 'vue-echarts' // 导入VueECharts组件
+// 解决告警 Added non-passive event listener.......
+import 'default-passive-events'
 
 const app = createApp(App)
 

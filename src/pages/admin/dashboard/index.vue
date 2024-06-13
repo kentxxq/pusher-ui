@@ -8,8 +8,8 @@
     <el-row>
         <el-col :xs="24" :md="12">
             <div style="height: 30vh;">
-                <PieChartComponent :titleText="roomCountTitle" :seriesDataName="roomCountDataName"
-                    :seriesData="roomCountData" />
+                <PieChartComponent :titleText="userCountTitle" :seriesDataName="userCountDataName"
+                    :seriesData="userCountData" />
             </div>
         </el-col>
         <el-col :xs="24" :md="12">
@@ -27,10 +27,10 @@
 <script lang="ts" setup>
 
 defineOptions({
-    name: 'page-home'
+    name: 'admin-dashboard-index'
 })
 
-import { dashboardGetRecentMessageCountGroupByChannelApi, dashboardGetRecentMessageCountGroupByDayApi, dashboardGetRecentMessageCountGroupByRoomApi } from '@/api/dashboard';
+import { adminGetChannelCountGroupByChannelTypeApi, adminGetRecentMessageCountGroupByDayApi, adminGetRecentMessageCountGroupByUserApi } from '@/api/admin';
 import LineChartComponent from '@/components/charts/LineChart.vue';
 import PieChartComponent from '@/components/charts/PieChart.vue';
 import type { TypeIntValueSO } from '@/types/pusher/dashboard';
@@ -45,7 +45,7 @@ onMounted(async () => {
 
 const initData = () => {
     getmessageCount()
-    getRoomCount()
+    getUserCount()
     getChannelCount()
 }
 
@@ -55,25 +55,25 @@ const messageCountTitle = ref("最近的消息数量")
 const messageCountDataName = ref("请求数")
 const messageCountData = ref<Array<[string, number]>>([["", 1]])
 const getmessageCount = async () => {
-    const data = await dashboardGetRecentMessageCountGroupByDayApi(num.value)
+    const data = await adminGetRecentMessageCountGroupByDayApi(num.value)
     messageCountData.value = data.map(item => [dateStringToDateString(item.date), item.count])
 }
 
-// 房间消息数占比
-const roomCountTitle = ref("房间消息占比")
-const roomCountDataName = ref("房间名")
-const roomCountData = ref<Array<TypeIntValueSO>>([])
-const getRoomCount = async () => {
-    const data = await dashboardGetRecentMessageCountGroupByRoomApi(num.value)
-    roomCountData.value = data
+// 用户消息数占比
+const userCountTitle = ref("用户消息占比")
+const userCountDataName = ref("用户名")
+const userCountData = ref<Array<TypeIntValueSO>>([])
+const getUserCount = async () => {
+    const data = await adminGetRecentMessageCountGroupByUserApi(num.value)
+    userCountData.value = data
 }
 
-// 管道消息数占比
-const channelCountTitle = ref("管道消息占比")
+// 管道类型占比
+const channelCountTitle = ref("管道类型占比")
 const channelCountDataName = ref("管道名")
 const channelCountData = ref<Array<TypeIntValueSO>>([])
 const getChannelCount = async () => {
-    const data = await dashboardGetRecentMessageCountGroupByChannelApi(num.value)
+    const data = await adminGetChannelCountGroupByChannelTypeApi()
     channelCountData.value = data
 }
 
