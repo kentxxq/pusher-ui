@@ -19,6 +19,7 @@ import type {
     TooltipComponentOption
 } from 'echarts/components'
 import { ref, watch } from 'vue';
+import type { TypeIntValueSO } from '@/types/pusher/dashboard';
 
 use([TitleComponent, TooltipComponent, PieChart, CanvasRenderer])
 
