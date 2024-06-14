@@ -60,7 +60,7 @@ const getmessageCount = async () => {
 }
 
 // 用户消息数占比
-const userCountTitle = ref("用户消息占比")
+const userCountTitle = ref("最近的用户消息占比")
 const userCountDataName = ref("用户名")
 const userCountData = ref<Array<TypeIntValueSO>>([])
 const getUserCount = async () => {
@@ -69,7 +69,7 @@ const getUserCount = async () => {
 }
 
 // 管道类型占比
-const channelCountTitle = ref("管道类型占比")
+const channelCountTitle = ref("当前管道类型占比")
 const channelCountDataName = ref("管道名")
 const channelCountData = ref<Array<TypeIntValueSO>>([])
 const getChannelCount = async () => {
