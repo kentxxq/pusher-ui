@@ -244,8 +244,8 @@ const updateId = ref<number>(-1)
 const openUpdateStringTemplate = (id: number) => {
     updateId.value = id;
     const data = templates.value.filter(t => t.id === id)[0]
-    console.log('data', data)
-    console.log('stringTemplate', dialogStringTemplate)
+    // console.log('data', data)
+    // console.log('stringTemplate', dialogStringTemplate)
 
     dialogStringTemplate.templateName = data.templateName
     dialogStringTemplate.stringTemplateObject.templateText = data.stringTemplateObject.templateText
