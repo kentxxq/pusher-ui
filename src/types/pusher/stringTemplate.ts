@@ -17,11 +17,13 @@ export interface StringTemplate {
 
 export interface CreateStringTemplateRO {
   templateName: string
+  templateCode: string
   stringTemplateObject: StringTemplateObject
 }
 
 export interface UpdateStringTemplateRO {
   id: number
   templateName: string
+  templateCode: string
   stringTemplateObject: StringTemplateObject
 }

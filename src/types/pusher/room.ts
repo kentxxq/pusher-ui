@@ -3,12 +3,24 @@ export enum MessageEnum {
   Image
 }
 
+export interface CreateRoomRO {
+  roomName: string
+  roomCode: string
+  roomKey: string
+}
+
+export interface UpdateRoomRO {
+  id: number
+  roomName: string
+  roomCode: string
+  roomKey?: string // This property is optional
+}
+
 export interface Room {
   id: number
   roomName: string
   roomCode: string
   roomKey?: string | null
-  customRoomName?: string | null
   createDate: Date | null
 }
 

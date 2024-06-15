@@ -3,7 +3,7 @@
         <!-- 查询表单 -->
         <el-row justify="space-between">
             <div class="left-container">
-                <el-button type="primary" @click="openCreateRoom"> 新建房间 </el-button>
+                <el-button type="primary" @click="openCreateRoomVisible"> 新建房间 </el-button>
                 <el-button type="danger" :disabled="selectedRows.length === 0"
                     @click="deleteVisible = true">删除房间</el-button>
                 <div v-if="selectedRows.length !== 0" class="selected-count">
@@ -27,8 +27,7 @@
                 <el-table-column type="selection" width="50" />
                 <el-table-column prop="roomName" label="房间名" width="160" />
                 <el-table-column prop="roomCode" :show-overflow-tooltip="true" label="房间代码" />
-                <!-- <el-table-column prop="roomKey" label="房间密钥" />
-                <el-table-column prop="customRoomName" label="自定义房间代码" /> -->
+                <el-table-column prop="roomKey" label="房间密钥" />
                 <el-table-column prop="createDate" label="创建时间" :width="dateFixedWidth">
                     <template #default="scope">
                         {{ dateStringFormat(scope.row.createDate) }}
@@ -39,7 +38,11 @@
                         <el-button type="primary" size="small" @click.stop="UpdateRoomChannel(scope.row.id)">
                             关联管道
                         </el-button>
-                        <el-button type="success" size="small" @click.stop="SendTestMessage(scope.row.roomCode)">
+                        <el-button type="primary" size="small" @click.stop="UpdateRoom(scope.row.id)">
+                            修改房间
+                        </el-button>
+                        <el-button type="success" size="small"
+                            @click.stop="SendTestMessage(scope.row.roomCode, scope.row.roomKey)">
                             发送测试信息
                         </el-button>
                         <el-button type="info" size="small" @click.stop="CopyUrl(scope.row.roomCode, 'Get')">
@@ -56,13 +59,23 @@
             </el-table>
         </div>
 
-        <!-- 新增 -->
-        <el-dialog v-model="roomVisible" title="创建房间" @close="onCreateRoomClose">
-            <el-input v-model="roomName" placeholder="请输入房间名" />
+        <!-- 新增/修改 -->
+        <el-dialog v-model="createOrUpdateRoomVisible" :title="dialogTitle" @close="onRoomVisibleClose">
+            <el-form ref="formRef" style="padding: 1rem;" :model="formData" :rules="rules">
+                <el-form-item label="房间名称" prop="roomName">
+                    <el-input v-model="formData.roomName" placeholder="请输入内容" />
+                </el-form-item>
+                <el-form-item label="房间Code" prop="roomCode">
+                    <el-input v-model="formData.roomCode" placeholder="请输入内容" />
+                </el-form-item>
+                <el-form-item label="房间Key" prop="roomKey">
+                    <el-input v-model="formData.roomKey" placeholder="请输入内容" />
+                </el-form-item>
+            </el-form>
             <template #footer>
                 <div class="dialog-footer">
-                    <el-button @click="onCreateRoomClose">取消</el-button>
-                    <el-button type="primary" @click="onCreateRoomConfirm">
+                    <el-button @click="onRoomVisibleClose">取消</el-button>
+                    <el-button type="primary" @click="onCreateOrUpdateChannelConfirm">
                         确认
                     </el-button>
                 </div>
@@ -85,7 +98,7 @@
         </el-dialog>
 
         <!-- 关联 -->
-        <el-dialog v-model="relationVisible" title="管道配置" @close="onCreateRoomClose">
+        <el-dialog v-model="relationVisible" title="管道配置" @close="onRoomVisibleClose">
             <div style="display: flex;justify-content: center;align-items: center;">
                 <el-transfer v-model="roomChannelIds" :data="transferData" :titles="['未加入的房间', '已加入的房间']" filterable />
             </div>
@@ -121,15 +134,15 @@
 </template>
 
 <script setup lang='ts'>
-import { roomCreateRoomApi, roomDeleteRoomApi, roomGetRoomsApi, roomSendMessageByGetApi, roomGetRoomChannelsApi, roomUpdateRoomChannelApi, roomGetRoomMessageHistoryApi } from '@/api/room';
-import { computed, onMounted, ref } from 'vue';
-import type { Room, RoomMessageHistorySO } from '@/types/pusher/room'
-import { ElMessage, ElTable } from 'element-plus';
+import { roomCreateRoomApi, roomDeleteRoomApi, roomGetRoomsApi, roomSendMessageByGetApi, roomGetRoomChannelsApi, roomUpdateRoomChannelApi, roomGetRoomMessageHistoryApi, roomUpdateRoomApi } from '@/api/room';
+import { computed, onMounted, reactive, ref } from 'vue';
+import type { CreateRoomRO, Room, RoomMessageHistorySO, UpdateRoomRO } from '@/types/pusher/room'
+import { ElMessage, ElTable, type FormInstance, type FormRules } from 'element-plus';
 import { dateStringFormat } from '@/utils/convert';
 import type { Channel } from '@/types/pusher/channel';
 import { channelGetUserChannelsApi } from '@/api/channel';
 import useClipboard from 'vue-clipboard3'
-
+import { v4 as uuidv4 } from 'uuid';
 
 
 defineOptions({
@@ -152,28 +165,83 @@ async function searchRoom() {
     rooms.value = await roomGetRoomsApi()
 }
 
-// 创建房间
-const roomVisible = ref(false)
-const roomName = ref('')
-function openCreateRoom() {
-    roomVisible.value = true
+// 创建/编辑房间
+const dialogTitle = ref('')
+const formData: CreateRoomRO = reactive({
+    roomName: '',
+    roomCode: uuidv4(),
+    roomKey: '',
+});
+function initFormData() {
+    formData.roomName = ''
+    formData.roomCode = uuidv4()
+    formData.roomKey = ''
 }
-async function createRoom(roomName: string) {
-    var result = await roomCreateRoomApi(roomName)
+const rules = reactive<FormRules<CreateRoomRO>>({
+    roomName: [
+        { required: true, message: '必填', trigger: 'blur' }
+    ],
+    roomCode: [
+        { required: true, message: '必填', trigger: 'blur' },
+    ],
+    // roomKey: [
+    //     { required: true, message: '必填', trigger: 'blur' },
+    // ]
+})
+const createOrUpdateRoomVisible = ref(false)
+const updateRoomId = ref(0)
+function openCreateRoomVisible() {
+    dialogTitle.value = '创建房间'
+    createOrUpdateRoomVisible.value = true
+    initFormData()
+}
+function UpdateRoom(roomId: number) {
+    dialogTitle.value = '修改房间'
+    updateRoomId.value = roomId
+    const data = rooms.value.filter(r => r.id === roomId)[0]
+    formData.roomName = data.roomName
+    formData.roomCode = data.roomCode
+    formData.roomKey = data.roomKey ?? ''
+    createOrUpdateRoomVisible.value = true
+}
+
+async function createRoom(createRoomRO: CreateRoomRO) {
+    var result = await roomCreateRoomApi(createRoomRO)
     ElMessage({
-        message: `成功创建${result}个房间`,
+        message: `成功创建房间: ${result}`,
         type: 'success',
     })
 }
-async function onCreateRoomConfirm() {
-    await createRoom(roomName.value)
-    roomVisible.value = false
-    roomName.value = ''
-    await searchRoom()
+async function updateRoom(updateRoomRO: UpdateRoomRO) {
+    var result = await roomUpdateRoomApi(updateRoomRO)
+    ElMessage({
+        message: `操作完成: ${result}`,
+        type: 'success',
+    })
 }
-function onCreateRoomClose() {
-    roomName.value = ''
-    roomVisible.value = false
+const formRef = ref<FormInstance>()
+async function onCreateOrUpdateChannelConfirm() {
+    if (!formRef.value) return
+    await formRef.value.validate(async (valid, fields) => {
+        if (valid) {
+            if (dialogTitle.value === '创建房间') {
+                await createRoom({ ...formData })
+            } else if (dialogTitle.value === '修改房间') {
+                await updateRoom({ id: updateRoomId.value, ...formData })
+            }
+
+            createOrUpdateRoomVisible.value = false
+            await searchRoom()
+        } else {
+            ElMessage({
+                message: `校验不通过`,
+                type: 'warning',
+            })
+        }
+    })
+}
+function onRoomVisibleClose() {
+    createOrUpdateRoomVisible.value = false
 }
 
 // 删除房间
@@ -259,8 +327,14 @@ const CopyUrl = (url: string, method: string) => {
 }
 
 // 发送测试消息
-const SendTestMessage = async (roomCode: string) => {
-    var result = await roomSendMessageByGetApi(roomCode, "测试内容\nby pusher")
+const SendTestMessage = async (roomCode: string, roomKey: string) => {
+    let result;
+    if (roomKey) {
+        result = await roomSendMessageByGetApi(roomCode, "测试内容\nby pusher", roomKey)
+    } else {
+        result = await roomSendMessageByGetApi(roomCode, "测试内容\nby pusher")
+    }
+
     ElMessage({
         message: result,
         type: 'success',

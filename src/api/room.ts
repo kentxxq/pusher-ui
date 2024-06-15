@@ -1,5 +1,11 @@
 import type { Channel } from '@/types/pusher/channel'
-import type { Room, RoomMessageHistorySO, UpdateRoomChannelRO } from '@/types/pusher/room'
+import type {
+  CreateRoomRO,
+  Room,
+  RoomMessageHistorySO,
+  UpdateRoomChannelRO,
+  UpdateRoomRO
+} from '@/types/pusher/room'
 import { HttpMethod } from '@/utils/enums'
 import { http } from '@/utils/request'
 
@@ -10,11 +16,19 @@ export function roomGetRoomsApi() {
   })
 }
 
-export function roomCreateRoomApi(roomName: string) {
-  return http<Array<Room>>({
+export function roomCreateRoomApi(createRoomRO: CreateRoomRO) {
+  return http<number>({
     url: '/Room/CreateRoom',
-    method: HttpMethod.GET,
-    params: { roomName }
+    method: HttpMethod.POST,
+    data: createRoomRO
+  })
+}
+
+export function roomUpdateRoomApi(updateRoomRO: UpdateRoomRO) {
+  return http<string>({
+    url: '/Room/UpdateRoom',
+    method: HttpMethod.POST,
+    data: updateRoomRO
   })
 }
 
@@ -26,11 +40,15 @@ export function roomDeleteRoomApi(roomIdList: Array<number>) {
   })
 }
 
-export function roomSendMessageByGetApi(roomCode: string, customContent: string) {
+export function roomSendMessageByGetApi(
+  roomCode: string,
+  customContent: string,
+  roomKey: string = ''
+) {
   return http<string>({
     url: `/Room/SendMessageByGet/${roomCode}`,
     method: HttpMethod.GET,
-    params: { content: customContent }
+    params: { content: customContent, roomKey }
   })
 }
 

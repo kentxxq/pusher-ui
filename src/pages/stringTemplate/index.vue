@@ -44,6 +44,9 @@
                 <el-form-item label="模板名称" prop="templateName">
                     <el-input v-model="dialogStringTemplate.templateName" placeholder="请输入内容" />
                 </el-form-item>
+                <el-form-item label="模板Code" prop="templateCode">
+                    <el-input v-model="dialogStringTemplate.templateCode" placeholder="请输入内容" />
+                </el-form-item>
 
                 <el-form-item>
                     <el-button type="primary" @click="addVariable">添加变量</el-button>
@@ -103,7 +106,7 @@ import { StringTemplateDeleteStringTemplatesApi, StringTemplateGetUserStringTemp
 import { computed, onMounted, reactive, ref } from 'vue';
 import { ElMessage, ElTable, type FormInstance, type FormRules } from 'element-plus';
 import type { CreateStringTemplateRO, StringTemplate, UpdateStringTemplateRO } from '@/types/pusher/stringTemplate';
-
+import { v4 as uuidv4 } from 'uuid';
 
 defineOptions({
     name: 'StringTemplateIndex'
@@ -129,6 +132,7 @@ async function searchStringTemplates() {
 const dialogTitle = ref('')
 const dialogStringTemplate: CreateStringTemplateRO = reactive({
     templateName: '',
+    templateCode: '',
     stringTemplateObject: {
         templateText: '',
         variables: []
@@ -143,6 +147,7 @@ const removeVariable = (index: number) => {
 const openCreateStringTemplate = () => {
     addVariable()
     dialogTitle.value = '新建模板'
+    dialogStringTemplate.templateCode = uuidv4()
     dialogVisible.value = true
 }
 const dialogVisible = ref(false)
@@ -153,6 +158,9 @@ const resetStringTemplate = () => {
 }
 const rules = reactive<FormRules>({
     templateName: [
+        { required: true, message: '必填', trigger: 'blur' }
+    ],
+    templateCode: [
         { required: true, message: '必填', trigger: 'blur' }
     ]
 })
