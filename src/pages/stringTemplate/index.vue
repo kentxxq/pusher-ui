@@ -244,8 +244,6 @@ const updateId = ref<number>(-1)
 const openUpdateStringTemplate = (id: number) => {
     updateId.value = id;
     const data = templates.value.filter(t => t.id === id)[0]
-    // console.log('data', data)
-    // console.log('stringTemplate', dialogStringTemplate)
 
     dialogStringTemplate.templateName = data.templateName
     dialogStringTemplate.stringTemplateObject.templateText = data.stringTemplateObject.templateText
@@ -255,25 +253,6 @@ const openUpdateStringTemplate = (id: number) => {
     dialogVisible.value = true
 }
 
-
-
-// const updateVisible = ref(false)
-
-// const relationStringTemplateId = ref<number>()
-// const UpdateStringTemplateChannel = async (roomId: number) => {
-//     relationStringTemplateId.value = roomId
-//     updateVisible.value = true
-// }
-// const onRelationConfirm = async () => {
-//     var result = 1
-//     ElMessage({
-//         message: `更新后模板的模板数量:${result}`,
-//         type: 'success'
-//     })
-// }
-// const onRelationClose = () => {
-//     updateVisible.value = false
-// }
 
 </script>
 
