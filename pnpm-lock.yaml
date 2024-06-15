@@ -54,6 +54,9 @@ importers:
       '@types/node':
         specifier: ^20.14.2
         version: 20.14.2
+      '@types/uuid':
+        specifier: ^9.0.8
+        version: 9.0.8
       '@vitejs/plugin-vue':
         specifier: ^5.0.5
         version: 5.0.5(vite@5.3.1(@types/node@20.14.2))(vue@3.4.29(typescript@5.4.5))
@@ -637,6 +640,9 @@ packages:
 
   '@types/svgo@2.6.4':
     resolution: {integrity: sha512-l4cmyPEckf8moNYHdJ+4wkHvFxjyW6ulm9l4YGaOxeyBWPhBOT0gvni1InpFPdzx1dKf/2s62qGITwxNWnPQng==}
+
+  '@types/uuid@9.0.8':
+    resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
 
   '@types/web-bluetooth@0.0.16':
     resolution: {integrity: sha512-oh8q2Zc32S6gd/j50GowEjKLoOVOwHP/bWVjKJInBwQqdOYMdPrf1oVlelTlyfFK3CKxL1uahMDAr+vy8T7yMQ==}
@@ -3336,6 +3342,8 @@ snapshots:
   '@types/svgo@2.6.4':
     dependencies:
       '@types/node': 20.14.2
+
+  '@types/uuid@9.0.8': {}
 
   '@types/web-bluetooth@0.0.16': {}
 
