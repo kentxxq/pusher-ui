@@ -246,6 +246,7 @@ const openUpdateStringTemplate = (id: number) => {
     const data = templates.value.filter(t => t.id === id)[0]
 
     dialogStringTemplate.templateName = data.templateName
+    dialogStringTemplate.templateCode = data.templateCode
     dialogStringTemplate.stringTemplateObject.templateText = data.stringTemplateObject.templateText
     dialogStringTemplate.stringTemplateObject.variables = data.stringTemplateObject.variables
 

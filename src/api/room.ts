@@ -43,7 +43,7 @@ export function roomDeleteRoomApi(roomIdList: Array<number>) {
 export function roomSendMessageByGetApi(
   roomCode: string,
   customContent: string,
-  roomKey: string = ''
+  roomKey?: string
 ) {
   return http<string>({
     url: `/Room/SendMessageByGet/${roomCode}`,
