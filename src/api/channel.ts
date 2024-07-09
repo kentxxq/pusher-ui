@@ -5,13 +5,15 @@ import type {
   CreateChannelRO,
   UpdateChannelRO
 } from '@/types/pusher/channel'
+import type { PageDataModel } from '@/types/pusher/common'
 import { HttpMethod } from '@/utils/enums'
 import { http } from '@/utils/request'
 
-export function channelGetUserChannelsApi() {
-  return http<Array<Channel>>({
-    url: '/Channel/GetUserChannels',
-    method: HttpMethod.GET
+export function channelGetUserChannelsWithPageApi(pageIndex: number, pageSize: number) {
+  return http<PageDataModel<Channel>>({
+    url: '/Channel/GetUserChannelsWithPage',
+    method: HttpMethod.GET,
+    params: { pageIndex, pageSize }
   })
 }
 

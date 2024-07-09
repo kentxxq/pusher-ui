@@ -150,7 +150,7 @@ import type { CreateRoomRO, Room, RoomMessageHistorySO, UpdateRoomRO } from '@/t
 import { ElMessage, ElTable, type FormInstance, type FormRules } from 'element-plus';
 import { dateStringFormat } from '@/utils/convert';
 import type { Channel } from '@/types/pusher/channel';
-import { channelGetUserChannelsApi } from '@/api/channel';
+import { channelGetUserChannelsWithPageApi } from '@/api/channel';
 import useClipboard from 'vue-clipboard3'
 import { v4 as uuidv4 } from 'uuid';
 
@@ -313,7 +313,7 @@ const UpdateRoomChannel = async (roomId: number) => {
     relationRoomId.value = roomId
     relationVisible.value = true
     // 拿到管道数据
-    allChannels.value = await channelGetUserChannelsApi()
+    allChannels.value = await channelGetUserChannelsWithPageApi()
     transferData.value = allChannels.value.map(c => { return { key: c.id, label: c.channelName, disabled: false } })
     // 拿到房间的管道
     const roomChannels = await roomGetRoomChannelsApi(roomId)

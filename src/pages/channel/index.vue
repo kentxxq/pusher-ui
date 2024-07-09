@@ -10,6 +10,11 @@
                 </div>
             </div>
 
+            <div style="display: flex; align-items: center; justify-self: center;gap:1rem;">
+                <el-pagination background layout="sizes, prev, pager, next,->, total" v-model:current-page="pageIndex"
+                    @change="change" :total="totalCount" />
+            </div>
+
             <div class="right-container">
                 <el-input style="width: 10rem;" placeholder="搜索管道名" v-model="searchValue" clearable>
                 </el-input>
@@ -137,7 +142,7 @@
 import { dateStringFormat } from '@/utils/convert';
 import { computed, onMounted, reactive, ref } from 'vue';
 import type { Channel, ChannelJoinedRoomsSO, ChannelMessageHistorySO, CreateChannelRO, UpdateChannelRO } from '@/types/pusher/channel'
-import { channelCreateChannelApi, channelDeleteChannelApi, channelGetChannelJoinedRoomsApi, channelGetUserChannelsApi, channelSendTestMessageToChannelApi, channelUpdateChannelApi, channelGetChannelMessageHistoryApi } from '@/api/channel';
+import { channelCreateChannelApi, channelDeleteChannelApi, channelGetChannelJoinedRoomsApi, channelGetUserChannelsWithPageApi, channelSendTestMessageToChannelApi, channelUpdateChannelApi, channelGetChannelMessageHistoryApi } from '@/api/channel';
 import type { EnumObject } from '@/types/pusher/common';
 import { enumChannelEnumApi } from '@/api/enumapi';
 import { ElMessage, ElTable, type FormInstance, type FormRules } from 'element-plus';
@@ -148,6 +153,17 @@ defineOptions({
 })
 const dateFixedWidth: string = import.meta.env.VITE_DATE_FIXED_WIDTH;
 const channelTypeOptions = ref<Array<EnumObject>>([])
+
+// 分页
+const pageIndex = ref(1)
+const pageSize = ref(10)
+const totalCount = ref(0)
+const change = async (newCurrentPage: number, newPageSize: number) => {
+    pageIndex.value = newCurrentPage
+    pageSize.value = newPageSize
+    await searchChannel();
+}
+
 // 挂载
 onMounted(async () => {
     channelTypeOptions.value = await enumChannelEnumApi()
@@ -194,7 +210,9 @@ const searchData = computed(() => {
     return channels.value.filter(c => c.channelName.indexOf(searchValue.value) !== -1);
 })
 async function searchChannel() {
-    channels.value = await channelGetUserChannelsApi()
+    const result = await channelGetUserChannelsWithPageApi(pageIndex.value, pageSize.value)
+    channels.value = result.pageData
+    totalCount.value = result.totalCount
 }
 
 // 创建/修改 管道

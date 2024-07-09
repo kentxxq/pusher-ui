@@ -1,3 +1,4 @@
+import type { PageDataModel } from '@/types/pusher/common'
 import type {
   CreateStringTemplateRO,
   StringTemplate,
@@ -6,10 +7,14 @@ import type {
 import { HttpMethod } from '@/utils/enums'
 import { http } from '@/utils/request'
 
-export function StringTemplateGetUserStringTemplatesApi() {
-  return http<Array<StringTemplate>>({
-    url: '/StringTemplate/GetUserStringTemplates',
-    method: HttpMethod.GET
+export function StringTemplateGetUserStringTemplatesWithPageApi(
+  pageIndex: number,
+  pageSize: number
+) {
+  return http<PageDataModel<StringTemplate>>({
+    url: '/StringTemplate/GetUserStringTemplatesWithPage',
+    method: HttpMethod.GET,
+    params: { pageIndex, pageSize }
   })
 }
 

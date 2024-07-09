@@ -1,3 +1,4 @@
+import type { PageDataModel } from '@/types/pusher/common'
 import type { DateCountSO, TypeIntValueSO } from '@/types/pusher/dashboard'
 import type { CreateUserRO, UpdateUserRoleRO, User } from '@/types/pusher/user'
 import { HttpMethod } from '@/utils/enums'
@@ -17,10 +18,11 @@ export function adminResetSystemStringTemplatesApi() {
   })
 }
 
-export function adminGetUsersApi() {
-  return http<User[]>({
-    url: '/Admin/GetUsers',
-    method: HttpMethod.GET
+export function adminGetUsersWithPageApi(pageIndex: number, pageSize: number) {
+  return http<PageDataModel<User>>({
+    url: '/Admin/GetUsersWithPage',
+    method: HttpMethod.GET,
+    params: { pageIndex, pageSize }
   })
 }
 

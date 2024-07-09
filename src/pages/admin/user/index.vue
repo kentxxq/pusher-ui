@@ -11,6 +11,11 @@
                 </div>
             </div>
 
+            <div style="display: flex; align-items: center; justify-self: center;gap:1rem;">
+                <el-pagination background layout="sizes, prev, pager, next,->, total" v-model:current-page="pageIndex"
+                    @change="change" :total="totalCount" />
+            </div>
+
             <div class="right-container">
                 <el-input style="width: 10rem;" placeholder="搜索用户名" v-model="searchValue" clearable>
                 </el-input>
@@ -107,7 +112,7 @@
 </template>
 
 <script setup lang='ts'>
-import { adminCreateUserApi, adminDeleteUserApi, adminGetUsersApi, adminUpdateUserRoleApi } from '@/api/admin';
+import { adminCreateUserApi, adminDeleteUserApi, adminGetUsersWithPageApi, adminUpdateUserRoleApi } from '@/api/admin';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { RoleType, type CreateUserRO, type User } from '@/types/pusher/user'
 import { ElMessage, ElTable, type FormInstance, type FormRules } from 'element-plus';
@@ -126,6 +131,15 @@ const searchValue = ref('');
 const searchData = computed(() => {
     return users.value.filter(r => r.username.indexOf(searchValue.value) !== -1);
 })
+// 分页
+const pageIndex = ref(1)
+const pageSize = ref(10)
+const totalCount = ref(0)
+const change = async (newCurrentPage: number, newPageSize: number) => {
+    pageIndex.value = newCurrentPage
+    pageSize.value = newPageSize
+    await searchUser();
+}
 
 onMounted(async () => {
     // 先获取枚举,否则table会警告无法拿到枚举值
@@ -135,7 +149,9 @@ onMounted(async () => {
 
 // 搜索按钮
 async function searchUser() {
-    users.value = await adminGetUsersApi()
+    const result = await adminGetUsersWithPageApi(pageIndex.value, pageSize.value)
+    users.value = result.pageData
+    totalCount.value = result.totalCount
 }
 
 // 创建用户

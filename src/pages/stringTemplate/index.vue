@@ -11,6 +11,11 @@
                 </div>
             </div>
 
+            <div style="display: flex; align-items: center; justify-self: center;gap:1rem;">
+                <el-pagination background layout="sizes, prev, pager, next,->, total" v-model:current-page="pageIndex"
+                    @change="change" :total="totalCount" />
+            </div>
+
             <div class="right-container">
                 <el-input style="width: 10rem;" placeholder="搜索模板名" v-model="UpdateStringTemplate" clearable>
                 </el-input>
@@ -102,7 +107,7 @@
 </template>
 
 <script setup lang='ts'>
-import { StringTemplateDeleteStringTemplatesApi, StringTemplateGetUserStringTemplatesApi, StringTemplateCreateStringTemplateApi, StringTemplateUpdateStringTemplateApi } from '@/api/stringTemplate';
+import { StringTemplateDeleteStringTemplatesApi, StringTemplateGetUserStringTemplatesWithPageApi, StringTemplateCreateStringTemplateApi, StringTemplateUpdateStringTemplateApi } from '@/api/stringTemplate';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { ElMessage, ElTable, type FormInstance, type FormRules } from 'element-plus';
 import type { CreateStringTemplateRO, StringTemplate, UpdateStringTemplateRO } from '@/types/pusher/stringTemplate';
@@ -119,13 +124,25 @@ const searchData = computed(() => {
     return templates.value.filter(t => t.templateName.indexOf(UpdateStringTemplate.value) !== -1);
 })
 
+// 分页
+const pageIndex = ref(1)
+const pageSize = ref(10)
+const totalCount = ref(0)
+const change = async (newCurrentPage: number, newPageSize: number) => {
+    pageIndex.value = newCurrentPage
+    pageSize.value = newPageSize
+    await searchStringTemplates();
+}
+
 onMounted(async () => {
     await searchStringTemplates()
 })
 
 // 搜索按钮
 async function searchStringTemplates() {
-    templates.value = await StringTemplateGetUserStringTemplatesApi()
+    const result = await StringTemplateGetUserStringTemplatesWithPageApi(pageIndex.value, pageSize.value)
+    templates.value = result.pageData
+    totalCount.value = result.totalCount
 }
 
 // 创建模板
