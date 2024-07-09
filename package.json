@@ -33,7 +33,7 @@
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.10.3",
     "@tsconfig/node20": "^20.1.4",
-    "@types/node": "^20.14.9",
+    "@types/node": "^20.14.10",
     "@types/uuid": "^9.0.8",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vitejs/plugin-vue-jsx": "^3.1.0",
@@ -42,7 +42,7 @@
     "@vue/tsconfig": "^0.5.1",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.27.0",
-    "npm-run-all2": "^6.2.0",
+    "npm-run-all2": "^6.2.2",
     "prettier": "^3.3.2",
     "rollup-plugin-visualizer": "^5.12.0",
     "typescript": "~5.4.5",
@@ -52,6 +52,7 @@
     "vite": "^5.3.3",
     "vite-plugin-svg-icons": "^2.0.1",
     "vite-plugin-vue-devtools": "^7.3.5",
-    "vue-tsc": "^2.0.24"
-  }
+    "vue-tsc": "^2.0.26"
+  },
+  "packageManager": "pnpm@9.0.5+sha512.a722575c18fd791f9ef71e387c6e16cc03c90d859b9b0998d0428ca0e3220828b32a96e6de73cea34edbc0f50824771b1a69c7ea36b86daa3b89c7e6d9a3d912"
 }

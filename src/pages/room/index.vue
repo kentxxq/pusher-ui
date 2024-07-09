@@ -11,6 +11,11 @@
                 </div>
             </div>
 
+            <div style="display: flex; align-items: center; justify-self: center;gap:1rem;">
+                <el-pagination background layout="sizes, prev, pager, next,->, total" v-model:current-page="pageIndex"
+                    @change="change" :total="totalCount" />
+            </div>
+
             <div class="right-container">
                 <el-input style="width: 10rem;" placeholder="搜索房间名" v-model="searchValue" clearable>
                 </el-input>
@@ -19,6 +24,11 @@
                 </el-button>
             </div>
         </el-row>
+
+        <!-- <el-row style="display: flex; align-items: center; margin: 1rem; float:right;gap:1rem;">
+            <div>总计 {{ totalCount }}</div>
+            <el-pagination background layout="prev, pager, next" v-model:current-page="pageIndex" :total="totalCount" />
+        </el-row> -->
 
         <!-- 表格 -->
         <div style="margin-top: 1rem;">
@@ -134,7 +144,7 @@
 </template>
 
 <script setup lang='ts'>
-import { roomCreateRoomApi, roomDeleteRoomApi, roomGetRoomsApi, roomSendMessageByGetApi, roomGetRoomChannelsApi, roomUpdateRoomChannelApi, roomGetRoomMessageHistoryApi, roomUpdateRoomApi } from '@/api/room';
+import { roomCreateRoomApi, roomDeleteRoomApi, roomGetRoomsWithPageApi, roomSendMessageByGetApi, roomGetRoomChannelsApi, roomUpdateRoomChannelApi, roomGetRoomMessageHistoryApi, roomUpdateRoomApi } from '@/api/room';
 import { computed, onMounted, reactive, ref } from 'vue';
 import type { CreateRoomRO, Room, RoomMessageHistorySO, UpdateRoomRO } from '@/types/pusher/room'
 import { ElMessage, ElTable, type FormInstance, type FormRules } from 'element-plus';
@@ -149,6 +159,17 @@ defineOptions({
     name: 'RoomIndex'
 })
 
+
+// 分页
+const pageIndex = ref(1)
+const pageSize = ref(10)
+const totalCount = ref(0)
+const change = async (newCurrentPage: number, newPageSize: number) => {
+    pageIndex.value = newCurrentPage
+    pageSize.value = newPageSize
+    await searchRoom();
+}
+
 const dateFixedWidth: string = import.meta.env.VITE_DATE_FIXED_WIDTH;
 let rooms = ref<Room[]>([])
 const searchValue = ref('');
@@ -162,7 +183,9 @@ onMounted(async () => {
 
 // 搜索按钮
 async function searchRoom() {
-    rooms.value = await roomGetRoomsApi()
+    const result = await roomGetRoomsWithPageApi(pageIndex.value, pageSize.value)
+    rooms.value = result.pageData
+    totalCount.value = result.totalCount
 }
 
 // 创建/编辑房间

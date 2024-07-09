@@ -12,6 +12,13 @@ export interface ResultModel<T> {
   data: T
 }
 
+export interface PageDataModel<T> {
+  pageIndex: number
+  pageSize: number
+  totalCount: number
+  pageData: Array<T>
+}
+
 export interface JwtStruct {
   sub: string
   aud: string

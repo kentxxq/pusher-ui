@@ -1,4 +1,5 @@
 import type { Channel } from '@/types/pusher/channel'
+import type { PageDataModel } from '@/types/pusher/common'
 import type {
   CreateRoomRO,
   Room,
@@ -9,10 +10,11 @@ import type {
 import { HttpMethod } from '@/utils/enums'
 import { http } from '@/utils/request'
 
-export function roomGetRoomsApi() {
-  return http<Array<Room>>({
-    url: '/Room/GetRooms',
-    method: HttpMethod.GET
+export function roomGetRoomsWithPageApi(pageIndex: number, pageSize: number) {
+  return http<PageDataModel<Room>>({
+    url: '/Room/GetRoomsWithPage',
+    method: HttpMethod.GET,
+    params: { pageIndex, pageSize }
   })
 }
 
@@ -40,11 +42,7 @@ export function roomDeleteRoomApi(roomIdList: Array<number>) {
   })
 }
 
-export function roomSendMessageByGetApi(
-  roomCode: string,
-  customContent: string,
-  roomKey?: string
-) {
+export function roomSendMessageByGetApi(roomCode: string, customContent: string, roomKey?: string) {
   return http<string>({
     url: `/Room/SendMessageByGet/${roomCode}`,
     method: HttpMethod.GET,
