@@ -11,7 +11,7 @@
                 </div>
             </div>
 
-            <div style="display: flex; align-items: center; justify-self: center;gap:1rem;">
+            <div style="display: flex; align-items: center; justify-self: center;">
                 <el-pagination background layout="sizes, prev, pager, next,->, total" v-model:current-page="pageIndex"
                     @change="change" :total="totalCount" />
             </div>
@@ -24,11 +24,6 @@
                 </el-button>
             </div>
         </el-row>
-
-        <!-- <el-row style="display: flex; align-items: center; margin: 1rem; float:right;gap:1rem;">
-            <div>总计 {{ totalCount }}</div>
-            <el-pagination background layout="prev, pager, next" v-model:current-page="pageIndex" :total="totalCount" />
-        </el-row> -->
 
         <!-- 表格 -->
         <div style="margin-top: 1rem;">
@@ -124,6 +119,10 @@
 
         <!-- 消息记录 -->
         <el-dialog v-model="historyVisible" title="消息记录" @close="historyVisible = false">
+            <div style="display: flex; align-items: center; justify-self: center;">
+                <el-pagination background layout="sizes, prev, pager, next,->, total"
+                    v-model:current-page="historyPageIndex" @change="historyChange" :total="historyTotalCount" />
+            </div>
             <el-table :data="history" :table-layout="'auto'"
                 :default-sort="{ prop: 'recordTime', order: 'descending' }">
                 <el-table-column prop="content" label="文本内容" />
@@ -144,13 +143,13 @@
 </template>
 
 <script setup lang='ts'>
-import { roomCreateRoomApi, roomDeleteRoomApi, roomGetRoomsWithPageApi, roomSendMessageByGetApi, roomGetRoomChannelsApi, roomUpdateRoomChannelApi, roomGetRoomMessageHistoryApi, roomUpdateRoomApi } from '@/api/room';
+import { roomCreateRoomApi, roomDeleteRoomApi, roomGetRoomsWithPageApi, roomSendMessageByGetApi, roomGetRoomChannelsApi, roomUpdateRoomChannelApi, roomGetRoomMessageHistoryWithPageApi as roomGetRoomMessageHistoryWithPageApi, roomUpdateRoomApi } from '@/api/room';
 import { computed, onMounted, reactive, ref } from 'vue';
 import type { CreateRoomRO, Room, RoomMessageHistorySO, UpdateRoomRO } from '@/types/pusher/room'
 import { ElMessage, ElTable, type FormInstance, type FormRules } from 'element-plus';
 import { dateStringFormat } from '@/utils/convert';
 import type { Channel } from '@/types/pusher/channel';
-import { channelGetUserChannelsWithPageApi } from '@/api/channel';
+import { channelGetUserChannelsApi } from '@/api/channel';
 import useClipboard from 'vue-clipboard3'
 import { v4 as uuidv4 } from 'uuid';
 
@@ -311,13 +310,15 @@ const transferData = ref<Option[]>()
 const relationRoomId = ref<number>()
 const UpdateRoomChannel = async (roomId: number) => {
     relationRoomId.value = roomId
-    relationVisible.value = true
+
     // 拿到管道数据
-    allChannels.value = await channelGetUserChannelsWithPageApi()
+    allChannels.value = await channelGetUserChannelsApi()
     transferData.value = allChannels.value.map(c => { return { key: c.id, label: c.channelName, disabled: false } })
     // 拿到房间的管道
     const roomChannels = await roomGetRoomChannelsApi(roomId)
     roomChannelIds.value = roomChannels.map(r => r.id)
+
+    relationVisible.value = true
 }
 const onRelationConfirm = async () => {
     const result = await roomUpdateRoomChannelApi({ roomId: relationRoomId.value!, channelIds: roomChannelIds.value })
@@ -366,11 +367,30 @@ const SendTestMessage = async (roomCode: string, roomKey: string) => {
 
 
 // 查看消息记录
+// 分页
+const historyPageIndex = ref(1)
+const historyPageSize = ref(10)
+const historyTotalCount = ref(0)
+const historyRoomId = ref(0)
+const historyChange = async (newCurrentPage: number, newPageSize: number) => {
+    historyPageIndex.value = newCurrentPage
+    historyPageSize.value = newPageSize
+    await searchHistory(historyRoomId.value);
+}
+
+// 更新分页的数据
+const searchHistory = async (roomId: number) => {
+    const result = await roomGetRoomMessageHistoryWithPageApi(roomId, historyPageIndex.value, historyPageSize.value)
+    history.value = result.pageData
+    historyTotalCount.value = result.totalCount
+}
+
 const historyVisible = ref(false)
 const history = ref<RoomMessageHistorySO[]>([])
 const ShowRoomMessageHistory = async (roomId: number) => {
-    history.value = await roomGetRoomMessageHistoryApi(roomId)
+    await searchHistory(roomId)
     historyVisible.value = true
+    historyRoomId.value = roomId
 }
 
 </script>

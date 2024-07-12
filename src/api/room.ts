@@ -66,10 +66,14 @@ export function roomUpdateRoomChannelApi(updateRoomChannelRO: UpdateRoomChannelR
   })
 }
 
-export function roomGetRoomMessageHistoryApi(roomId: number) {
-  return http<RoomMessageHistorySO[]>({
-    url: '/Room/GetRoomMessageHistory',
+export function roomGetRoomMessageHistoryWithPageApi(
+  roomId: number,
+  pageIndex: number,
+  pageSize: number
+) {
+  return http<PageDataModel<RoomMessageHistorySO>>({
+    url: '/Room/GetRoomMessageHistoryWithPage',
     method: HttpMethod.GET,
-    params: { roomid: roomId }
+    params: { roomid: roomId, pageIndex, pageSize }
   })
 }

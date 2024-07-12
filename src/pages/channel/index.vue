@@ -10,7 +10,7 @@
                 </div>
             </div>
 
-            <div style="display: flex; align-items: center; justify-self: center;gap:1rem;">
+            <div style="display: flex; align-items: center; justify-self: center;">
                 <el-pagination background layout="sizes, prev, pager, next,->, total" v-model:current-page="pageIndex"
                     @change="change" :total="totalCount" />
             </div>
