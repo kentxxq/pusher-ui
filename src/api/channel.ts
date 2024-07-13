@@ -64,10 +64,14 @@ export function channelGetChannelJoinedRoomsApi(channelId: number) {
   })
 }
 
-export function channelGetChannelMessageHistoryApi(channelId: number) {
-  return http<ChannelMessageHistorySO[]>({
-    url: '/Channel/GetChannelMessageHistory',
+export function channelGetChannelMessageHistoryWithPageApi(
+  channelId: number,
+  pageIndex: number,
+  pageSize: number
+) {
+  return http<PageDataModel<ChannelMessageHistorySO>>({
+    url: '/Channel/GetChannelMessageHistoryWithPage',
     method: HttpMethod.GET,
-    params: { channelId }
+    params: { channelId, pageIndex, pageSize }
   })
 }

@@ -116,6 +116,10 @@
 
         <!-- 消息记录 -->
         <el-dialog v-model="historyVisible" title="消息记录" @close="historyVisible = false">
+            <div style="display: flex; align-items: center; justify-self: center;">
+                <el-pagination background layout="sizes, prev, pager, next,->, total"
+                    v-model:current-page="historyPageIndex" @change="historyChange" :total="historyTotalCount" />
+            </div>
             <el-table :data="history" :table-layout="'auto'"
                 :default-sort="{ prop: 'recordTime', order: 'descending' }">
                 <el-table-column prop="content" label="文本内容" />
@@ -142,7 +146,7 @@
 import { dateStringFormat } from '@/utils/convert';
 import { computed, onMounted, reactive, ref } from 'vue';
 import type { Channel, ChannelJoinedRoomsSO, ChannelMessageHistorySO, CreateChannelRO, UpdateChannelRO } from '@/types/pusher/channel'
-import { channelCreateChannelApi, channelDeleteChannelApi, channelGetChannelJoinedRoomsApi, channelGetUserChannelsWithPageApi, channelSendTestMessageToChannelApi, channelUpdateChannelApi, channelGetChannelMessageHistoryApi } from '@/api/channel';
+import { channelCreateChannelApi, channelDeleteChannelApi, channelGetChannelJoinedRoomsApi, channelGetUserChannelsWithPageApi, channelSendTestMessageToChannelApi, channelUpdateChannelApi, channelGetChannelMessageHistoryWithPageApi } from '@/api/channel';
 import type { EnumObject } from '@/types/pusher/common';
 import { enumChannelEnumApi } from '@/api/enumapi';
 import { ElMessage, ElTable, type FormInstance, type FormRules } from 'element-plus';
@@ -193,10 +197,28 @@ const GetChannelJoinedRooms = async (channelId: number) => {
     joinedRooms.value = await channelGetChannelJoinedRoomsApi(channelId)
 }
 // 消息记录
+const historyPageIndex = ref(1)
+const historyPageSize = ref(10)
+const historyTotalCount = ref(0)
+const historyChannelId = ref(0)
+const historyChange = async (newCurrentPage: number, newPageSize: number) => {
+    historyPageIndex.value = newCurrentPage
+    historyPageSize.value = newPageSize
+    await searchHistory(historyChannelId.value);
+}
+
+// 更新分页的数据
+const searchHistory = async (channelId: number) => {
+    const result = await channelGetChannelMessageHistoryWithPageApi(channelId, historyPageIndex.value, historyPageSize.value)
+    history.value = result.pageData
+    historyTotalCount.value = result.totalCount
+}
+
 const historyVisible = ref(false)
 const history = ref<ChannelMessageHistorySO[]>([])
 const ShowChannelMessageHistory = async (channelId: number) => {
-    history.value = await channelGetChannelMessageHistoryApi(channelId)
+    await searchHistory(channelId)
+    historyChannelId.value = channelId
     historyVisible.value = true
 }
 

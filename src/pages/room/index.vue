@@ -311,11 +311,16 @@ const relationRoomId = ref<number>()
 const UpdateRoomChannel = async (roomId: number) => {
     relationRoomId.value = roomId
 
+    const [allChannelsResponse, roomChannelsResponse] = await Promise.all([
+        channelGetUserChannelsApi(),
+        roomGetRoomChannelsApi(roomId)
+    ]);
+
     // 拿到管道数据
-    allChannels.value = await channelGetUserChannelsApi()
+    allChannels.value = allChannelsResponse
     transferData.value = allChannels.value.map(c => { return { key: c.id, label: c.channelName, disabled: false } })
     // 拿到房间的管道
-    const roomChannels = await roomGetRoomChannelsApi(roomId)
+    const roomChannels = roomChannelsResponse
     roomChannelIds.value = roomChannels.map(r => r.id)
 
     relationVisible.value = true
