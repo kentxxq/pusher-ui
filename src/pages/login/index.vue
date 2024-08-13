@@ -35,7 +35,7 @@
                     </template>
                 </el-input>
                 <div style="width:100%; display: flex;justify-content:center;margin-top: 1rem;">
-                    <el-button type="primary" @click="GetPassword">获取密码</el-button>
+                    <el-button type="primary" @click="GetPassword" :loading="forgetLogin">获取密码</el-button>
                     <el-button type="info" @click="form2Visible = !form2Visible">返回登录</el-button>
                 </div>
             </div>
@@ -98,16 +98,26 @@ const onSubmit = async () => {
 
 
 // 注册/忘记密码
+const forgetLogin = ref(false)
 const form2Visible = ref(false)
 const username = ref('')
-const GetPassword = async ()=>{
-    var result = await userGetPasswordApi(username.value)
-    ElMessage({
-        message:result,
-        type:'success'
-    })
-    form2Visible.value = !form2Visible.value
-    formData.username = username.value
+const GetPassword = async () => {
+    forgetLogin.value = true
+    try {
+        var result = await userGetPasswordApi(username.value)
+        ElMessage({
+            message: result,
+            type: 'success',
+            duration: 3000
+        })
+        form2Visible.value = !form2Visible.value
+        formData.username = username.value
+    } catch (error) {
+        console.warn(`获取密码失败: ${error}`)
+    } finally {
+        forgetLogin.value = false
+    }
+
 }
 
 
