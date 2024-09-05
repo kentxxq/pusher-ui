@@ -1,3 +1,5 @@
+import { ChannelMessageStatus } from '@/types/pusher/channel'
+
 // 格式化时间,把2024-09-05T16:02:14+08:00变成2024-09-05 16:02:14
 export function dateStringFormat(data: string): string {
   // const date = new Date(data)
@@ -76,4 +78,9 @@ export function dateTimeStringToDateString(data: string): string {
 
   // 拼接成所需的格式 yyyy-MM-dd
   return `${formattedDate.year}-${formattedDate.month}-${formattedDate.day}`
+}
+
+// 0转成ChannelMessageStatus字符串
+export function toChannelMessageStatus(data: number) {
+  return ChannelMessageStatus[data]
 }

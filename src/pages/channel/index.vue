@@ -128,7 +128,11 @@
                         {{ dateStringFormat(scope.row.recordTime) }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="status" label="状态" />
+                <el-table-column prop="status" label="状态">
+                    <template #default="scope">
+                        {{ toChannelMessageStatus(scope.row.status) }}
+                    </template>
+                </el-table-column>
                 <el-table-column prop="success" label="是否处理成功" />
                 <el-table-column prop="result" label="处理结果" />
             </el-table> <template #footer>
@@ -143,7 +147,7 @@
 </template>
 
 <script setup lang='ts'>
-import { dateStringFormat } from '@/utils/convert';
+import { dateStringFormat, toChannelMessageStatus } from '@/utils/convert';
 import { computed, onMounted, reactive, ref } from 'vue';
 import type { Channel, ChannelJoinedRoomsSO, ChannelMessageHistorySO, CreateChannelRO, UpdateChannelRO } from '@/types/pusher/channel'
 import { channelCreateChannelApi, channelDeleteChannelApi, channelGetChannelJoinedRoomsApi, channelGetUserChannelsWithPageApi, channelSendTestMessageToChannelApi, channelUpdateChannelApi, channelGetChannelMessageHistoryWithPageApi } from '@/api/channel';

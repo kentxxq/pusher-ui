@@ -41,7 +41,7 @@ export interface ChannelJoinedRoomsSO {
   createDate: Date
 }
 
-enum ChannelMessageStatus {
+export enum ChannelMessageStatus {
   Todo,
   Done
 }
