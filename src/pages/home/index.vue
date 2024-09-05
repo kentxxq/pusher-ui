@@ -34,7 +34,7 @@ import { dashboardGetRecentMessageCountGroupByChannelApi, dashboardGetRecentMess
 import LineChartComponent from '@/components/charts/LineChart.vue';
 import PieChartComponent from '@/components/charts/PieChart.vue';
 import type { TypeIntValueSO } from '@/types/pusher/dashboard';
-import { dateStringToDateString } from '@/utils/convert';
+import { dateTimeStringToDateString } from '@/utils/convert';
 import { onMounted, ref } from 'vue';
 
 
@@ -56,7 +56,7 @@ const messageCountDataName = ref("请求数")
 const messageCountData = ref<Array<[string, number]>>([["", 1]])
 const getmessageCount = async () => {
     const data = await dashboardGetRecentMessageCountGroupByDayApi(num.value)
-    messageCountData.value = data.map(item => [dateStringToDateString(item.date), item.count])
+    messageCountData.value = data.map(item => [dateTimeStringToDateString(item.date), item.count])
 }
 
 // 房间消息数占比
