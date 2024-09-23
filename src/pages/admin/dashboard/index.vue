@@ -70,7 +70,7 @@ const getUserCount = async () => {
 
 // 管道类型占比
 const channelCountTitle = ref("当前管道类型占比")
-const channelCountDataName = ref("管道名")
+const channelCountDataName = ref("管道类型")
 const channelCountData = ref<Array<TypeIntValueSO>>([])
 const getChannelCount = async () => {
     const data = await adminGetChannelCountGroupByChannelTypeApi()
