@@ -340,9 +340,9 @@ const onRelationClose = () => {
 // 复制url
 const GetUrlByMethod = (url: string, method: string) => {
     if (method == 'Get') {
-        return `${window.location.protocol}//${window.location.host}/Room/SendMessageBy${method}/${url}?content=消息内容`
+        return `${window.location.protocol}//${window.location.host}${import.meta.env.VITE_SERVER}/Room/SendMessageBy${method}/${url}?content=消息内容`
     } else {
-        return `${window.location.protocol}//${window.location.host}/Room/SendMessageBy${method}/${url}`
+        return `${window.location.protocol}//${window.location.host}${import.meta.env.VITE_SERVER}/Room/SendMessageBy${method}/${url}`
     }
 }
 
