@@ -4,19 +4,29 @@
             {{ title }}
         </div>
         <div class="spacer"></div>
-        <el-dropdown @command="handleCommand">
-            <span style="display: flex;align-items: center;">
-                {{ userStore.username }} &nbsp;
-                <SvgIcon name="down" />
-            </span>
-            <template #dropdown>
-                <el-dropdown-menu>
-                    <el-dropdown-item v-for="option in options" :command="option.value" :key="option.value">{{
-                        option.content
-                        }}</el-dropdown-item>
-                </el-dropdown-menu>
-            </template>
-        </el-dropdown>
+        <div class="header_right">
+            <a style="color: black;" target="_blank" href="https://pusher-docs.kentxxq.com">
+                <SvgIcon name="github-fill" />
+            </a>
+
+            <a style="color: black;" target="_blank" href="https://pusher-docs.kentxxq.com">
+                <SvgIcon name="doc-search" />
+            </a>
+
+            <el-dropdown @command="handleCommand">
+                <span style="display: flex;align-items: center;">
+                    {{ userStore.username }} &nbsp;
+                    <SvgIcon name="down" />
+                </span>
+                <template #dropdown>
+                    <el-dropdown-menu>
+                        <el-dropdown-item v-for="option in options" :command="option.value" :key="option.value">{{
+                            option.content
+                            }}</el-dropdown-item>
+                    </el-dropdown-menu>
+                </template>
+            </el-dropdown>
+        </div>
     </div>
     <el-dialog v-model="visible" title="修改密码">
         <el-form ref="formRef" :model="formData" :rules="rules" label-width="auto">
@@ -191,6 +201,11 @@ const rules = reactive<FormRules<formModel>>({
 .header_left {
     font-size: x-large;
     font-weight: bolder;
+}
+
+.header_right {
+    display: flex;
+    gap: 2rem;
 }
 
 .spacer {

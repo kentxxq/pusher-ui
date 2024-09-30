@@ -1,7 +1,11 @@
 <template>
     <div class="login">
         <div class="form">
-            <h3 style="text-align: center;">{{ title }}</h3>
+            <h3 style="text-align: center;">
+                <a style="color: black;" class="custom-link" target="_blank" href="https://pusher-docs.kentxxq.com">
+                    {{ title }}
+                </a>
+            </h3>
             <el-form v-show="!form2Visible" :model="formData" :rules="rules" ref="formRef" @submit.prevent
                 @keyup.enter.prevent="onSubmit">
                 <el-form-item prop="username">
@@ -142,5 +146,15 @@ const GetPassword = async () => {
     width: 350px;
     border-radius: 1rem;
     box-shadow: 1rem 1rem 2rem rgba(0, 0, 0, 0.5);
+}
+
+.custom-link {
+    text-decoration: none;
+    /* 默认不显示下划线 */
+}
+
+.custom-link:hover {
+    text-decoration: underline;
+    /* 鼠标悬停时显示下划线 */
 }
 </style>
