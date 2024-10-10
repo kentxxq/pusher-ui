@@ -5,7 +5,7 @@
         </div>
         <div class="spacer"></div>
         <div class="header_right">
-            <a style="color: black;" target="_blank" href="https://pusher-docs.kentxxq.com">
+            <a style="color: black;" target="_blank" href="https://github.com/kentxxq/pusher">
                 <SvgIcon name="github-fill" />
             </a>
 
@@ -22,7 +22,7 @@
                     <el-dropdown-menu>
                         <el-dropdown-item v-for="option in options" :command="option.value" :key="option.value">{{
                             option.content
-                            }}</el-dropdown-item>
+                        }}</el-dropdown-item>
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>
