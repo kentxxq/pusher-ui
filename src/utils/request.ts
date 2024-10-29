@@ -33,7 +33,7 @@ axiosInstance.interceptors.response.use(
     console.debug('response拦截器-成功', response)
     if (response.data.code !== ResultStatus.Success) {
       ElMessage({
-        message: `请求报错: ${response.data.message}`,
+        message: `请求报错:${response.data.code},${response.data.message}`,
         type: 'error'
       })
       return Promise.reject(new Error(response.data.message))
