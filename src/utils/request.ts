@@ -22,6 +22,7 @@ axiosInstance.interceptors.request.use((config) => {
     return config
   } else {
     // token无效:注销用户,返回登录页
+    console.debug('request拦截器-token过期')
     userStore.loginOut()
     router.push('/login')
     return config
@@ -36,6 +37,14 @@ axiosInstance.interceptors.response.use(
         message: `请求报错:${response.data.code},${response.data.message}`,
         type: 'error'
       })
+
+      if (response.data.data === 401) {
+        const userStore = useUserStore()
+        userStore.loginOut()
+        router.push('/login')
+        return
+      }
+
       return Promise.reject(new Error(response.data.message))
     }
 
