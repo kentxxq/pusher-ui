@@ -33,16 +33,27 @@ axiosInstance.interceptors.response.use(
   (response: AxiosResponse<ResultModel<any>>) => {
     console.debug('response拦截器-成功', response)
     if (response.data.code !== ResultStatus.Success) {
-      ElMessage({
-        message: `请求报错:${response.data.code},${response.data.message}`,
-        type: 'error'
-      })
-
       if (response.data.data === 401) {
+        ElMessage({
+          message: `token 失效，请重新登录`,
+          type: 'error'
+        })
         const userStore = useUserStore()
         userStore.loginOut()
         router.push('/login')
         return
+      }
+
+      if (response.data.data === 403) {
+        ElMessage({
+          message: `没有权限执行操作,请联系管理员`,
+          type: 'error'
+        })
+      } else {
+        ElMessage({
+          message: `请求报错:${response.data.message}`,
+          type: 'error'
+        })
       }
 
       return Promise.reject(new Error(response.data.message))
