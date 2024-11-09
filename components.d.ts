@@ -32,6 +32,7 @@ declare module 'vue' {
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTag: typeof import('element-plus/es')['ElTag']
+    ElTransfer: typeof import('element-plus/es')['ElTransfer']
     LayoutAside: typeof import('./src/components/layouts/LayoutAside.vue')['default']
     LayoutHeader: typeof import('./src/components/layouts/LayoutHeader.vue')['default']
     Layouts: typeof import('./src/components/layouts/index.vue')['default']
