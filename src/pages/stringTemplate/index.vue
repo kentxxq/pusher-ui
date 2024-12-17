@@ -30,7 +30,7 @@
             <el-table ref="tableRef" :data="searchData" :table-layout="'auto'" @selection-change="handleSelectionChange"
                 @row-click="rowClick">
                 <el-table-column type="selection" width="50" />
-                <el-table-column prop="templateName" label="模板名" width="160" />
+                <el-table-column :show-overflow-tooltip="true" prop="templateName" label="模板名" width="160" />
                 <el-table-column prop="templateCode" :show-overflow-tooltip="true" label="模板代码" />
 
                 <el-table-column fixed="right" label="操作" width="120">

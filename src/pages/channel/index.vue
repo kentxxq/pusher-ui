@@ -28,7 +28,7 @@
             <el-table ref="tableRef" :data="searchData" :table-layout="'auto'" @selection-change="handleSelectionChange"
                 @row-click="rowClick">
                 <el-table-column type="selection" width="50" />
-                <el-table-column prop="channelName" label="管道名称" width="160" />
+                <el-table-column :show-overflow-tooltip="true" prop="channelName" label="管道名称" width="160" />
                 <el-table-column prop="channelType" label="管道类型" width="160">
                     <template #default="scope">
                         <el-tag>{{ GetTagDisplayName(scope.row.channelType) }}
