@@ -1,5 +1,19 @@
 import type { MessageEnum } from './room'
 
+export enum BarkEncryptionMode {
+  None = 'None',
+  AES128CBC = 'AES128CBC',
+  AES128ECB = 'AES128ECB',
+  AES256CBC = 'AES256CBC',
+  AES256ECB = 'AES256ECB'
+}
+
+export interface BarkChannelConfig {
+  encryptionKey: string
+  encryptionIv: string
+  encryptionMode: BarkEncryptionMode
+}
+
 enum ChannelEnum {
   DingTalk,
   ComWechat,
@@ -15,6 +29,7 @@ export interface Channel {
   channelType: ChannelEnum
   channelUrl: string
   channelProxyUrl: string | null
+  channelConfig: string | null
   userId: number
 }
 
@@ -23,6 +38,7 @@ export interface CreateChannelRO {
   channelType: ChannelEnum
   channelUrl: string
   channelProxyUrl: string | null
+  channelConfig: string | null
 }
 
 export interface UpdateChannelRO {
@@ -31,6 +47,7 @@ export interface UpdateChannelRO {
   channelType: ChannelEnum
   channelUrl: string
   channelProxyUrl: string | null
+  channelConfig: string | null
 }
 
 export interface ChannelJoinedRoomsSO {

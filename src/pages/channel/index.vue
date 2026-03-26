@@ -73,6 +73,23 @@
                 <el-form-item label="代理地址" prop="channelProxyUrl">
                     <el-input v-model="formData.channelProxyUrl" placeholder="请输入内容" />
                 </el-form-item>
+                <template v-if="formData.channelType === 4">
+                    <el-form-item label="加密模式">
+                        <el-select v-model="barkConfig.encryptionMode" placeholder="请选择加密模式">
+                            <el-option label="None" value="None" />
+                            <el-option label="AES128CBC" value="AES128CBC" />
+                            <el-option label="AES128ECB" value="AES128ECB" />
+                            <el-option label="AES256CBC" value="AES256CBC" />
+                            <el-option label="AES256ECB" value="AES256ECB" />
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item v-if="barkConfig.encryptionMode !== 'None'" label="加密密钥(Key)">
+                        <el-input v-model="barkConfig.encryptionKey" placeholder="请输入加密密钥" />
+                    </el-form-item>
+                    <el-form-item v-if="barkConfig.encryptionMode.includes('CBC')" label="加密向量(IV)">
+                        <el-input v-model="barkConfig.encryptionIv" placeholder="请输入加密向量" />
+                    </el-form-item>
+                </template>
             </el-form>
             <template #footer>
                 <div class="dialog-footer">
@@ -149,7 +166,7 @@
 <script setup lang='ts'>
 import { dateStringFormat, toChannelMessageStatus } from '@/utils/convert';
 import { computed, onMounted, reactive, ref } from 'vue';
-import type { Channel, ChannelJoinedRoomsSO, ChannelMessageHistorySO, CreateChannelRO, UpdateChannelRO } from '@/types/pusher/channel'
+import { BarkEncryptionMode, type BarkChannelConfig, type Channel, type ChannelJoinedRoomsSO, type ChannelMessageHistorySO, type CreateChannelRO, type UpdateChannelRO } from '@/types/pusher/channel'
 import { channelCreateChannelApi, channelDeleteChannelApi, channelGetChannelJoinedRoomsApi, channelGetUserChannelsWithPageApi, channelSendTestMessageToChannelApi, channelUpdateChannelApi, channelGetChannelMessageHistoryWithPageApi } from '@/api/channel';
 import type { EnumObject } from '@/types/pusher/common';
 import { enumChannelEnumApi } from '@/api/enumapi';
@@ -249,13 +266,23 @@ const formData: CreateChannelRO = reactive({
     channelName: '',
     channelType: 0,
     channelUrl: '',
-    channelProxyUrl: ''
+    channelProxyUrl: '',
+    channelConfig: null
+});
+const barkConfig: BarkChannelConfig = reactive({
+    encryptionKey: '',
+    encryptionIv: '',
+    encryptionMode: BarkEncryptionMode.None
 });
 function resetFormData() {
     formData.channelName = ''
     formData.channelType = 0
     formData.channelUrl = ''
     formData.channelProxyUrl = ''
+    formData.channelConfig = null
+    barkConfig.encryptionKey = ''
+    barkConfig.encryptionIv = ''
+    barkConfig.encryptionMode = BarkEncryptionMode.None
 }
 
 const rules = reactive<FormRules<CreateChannelRO>>({
@@ -285,6 +312,21 @@ function openUpdateChannel(channelId: number) {
     formData.channelProxyUrl = channel.channelProxyUrl
     formData.channelType = channel.channelType
     formData.channelUrl = channel.channelUrl
+    formData.channelConfig = channel.channelConfig
+    
+    if (channel.channelType === 4 && channel.channelConfig) {
+        try {
+            const parsed = JSON.parse(channel.channelConfig) as BarkChannelConfig
+            barkConfig.encryptionMode = parsed.encryptionMode || BarkEncryptionMode.None
+            barkConfig.encryptionKey = parsed.encryptionKey || ''
+            barkConfig.encryptionIv = parsed.encryptionIv || ''
+        } catch {
+            barkConfig.encryptionMode = BarkEncryptionMode.None
+            barkConfig.encryptionKey = ''
+            barkConfig.encryptionIv = ''
+        }
+    }
+
     createOrUpdateChannelVisible.value = true
     dialogTitle.value = "修改管道"
     updateChannelId.value = channel.id
@@ -307,6 +349,12 @@ async function onCreateOrUpdateChannelConfirm() {
     if (!formRef.value) return
     await formRef.value.validate(async (valid, fields) => {
         if (valid) {
+            if (formData.channelType === 4) {
+                formData.channelConfig = JSON.stringify(barkConfig)
+            } else {
+                formData.channelConfig = null
+            }
+
             if (dialogTitle.value === '创建管道') {
                 await createChannel({ ...formData })
             } else if (dialogTitle.value === '修改管道') {

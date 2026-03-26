@@ -24,7 +24,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/pusher.webapi': {
-        target: 'http://localhost:5000',
+        target: 'http://127.0.0.1:15000',
         changeOrigin: true
       }
     }
